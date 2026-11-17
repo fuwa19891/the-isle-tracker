@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Isle - Rex Duo Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- html2canvas wird hier wieder sauber per CDN eingebunden, aber mit sicherem App-Mode-Handling -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --bg-dark: rgba(22, 17, 13, 0.94);
@@ -35,6 +37,7 @@
       position: relative;
       width: 100%;
       max-width: 560px;
+      background: transparent;
     }
 
     /* T-Rex Schädel oben mittig am Rahmen */
@@ -591,7 +594,7 @@
       <div class="footer-bar">
         <span class="log-text" id="status-log">Bereit für die Jagd...</span>
         <div class="footer-actions">
-          <button class="circle-btn camera-btn" onclick="takeVisualSnapshot()" title="Screenshot als Bild kopieren">
+          <button class="circle-btn camera-btn" onclick="takeScreenshotToClipboard()" title="Screenshot als Bild in Zwischenablage">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
               <circle cx="12" cy="13" r="4"></circle>
@@ -753,6 +756,7 @@
       total += count;
       if (d.tier === 'apex') apex += count;
       if (d.tier === 'mittel') mittel += count;
+      if (d.tier ===20) {}; // placeholder
       if (d.tier === 'klein') klein += count;
 
       const btn = document.getElementById(`btn-${d.id}`);
@@ -792,37 +796,35 @@
     updateUI();
   }
 
-  // Ultraschneller, robuster Screenshot-Export direkt in die Zwischenablage als Bild
-  async function takeVisualSnapshot() {
-    setLog('Öffne Bild-Export...');
+  // Echter Screenshot-Befehl per html2canvas, der direkt als Bild in die Zwischenablage kopiert
+  async function takeScreenshotToClipboard() {
+    setLog('Erstelle Bild-Screenshot...');
+    const element = document.getElementById('capture-area');
+
     try {
-      const el = document.getElementById('capture-area');
-      
-      // Wir nutzen eine Canvas-basierte Zeichnung des aktuellen Widgets
-      const canvas = document.createElement('canvas');
-      canvas.width = 1120; // Doppelte Auflösung für gestochen scharfe Schärfe
-      canvas.height = 1400;
-      const ctx = canvas.getContext('2d');
+      const canvas = await html2canvas(element, {
+        backgroundColor: null,
+        scale: 2, // gestochen scharf
+        useCORS: true
+      });
 
-      // Hintergrund zeichnen (Bernstein-Optik simulieren)
-      ctx.fillStyle = '#16110d';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Da externe SVGs im App-Modus blockieren, öffnen wir ein sauberes Download-Fenster / Bild-Export,
-      // welches die Kills grafisch anordnet. Alternativ lösen wir den systemeigenen Screenshot aus:
-      if (window.confirm("Möchtest du das Widget als Bild speichern? (Klicke OK zum Download)")) {
-        // Fallback: Als PNG-Datei herunterladen, die man direkt in Discord ziehen kann
-        const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(document.documentElement.outerHTML);
-        const link = document.createElement('a');
-        link.href = 'data:image/svg+xml;base6spreadsheet,' + btoa(document.getElementById('capture-area').outerHTML);
-        
-        // Schnellster & verlässlichster Weg ohne Hänger:
-        window.print(); // Öffnet den Druckdialog, bei dem man "Als PDF speichern" oder direkt kopieren kann
-      }
-      
-      setLog('Bereit.');
-    } catch (e) {
-      setLog('Fehler. Nutze Win + Shift + S.');
+      canvas.toBlob(async (blob) => {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          setLog('Screenshot als Bild kopiert! [Strg + V in Discord]');
+          if (state.sound) playClickSound(650);
+        } catch (clipErr) {
+          setLog('Zwischenablage blockiert – lade stattdessen herunter...');
+          const link = document.createElement('a');
+          link.download = `The-Isle-Tracker.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        }
+      }, 'image/png');
+    } catch (err) {
+      setLog('Fehler beim Screenshot.');
     }
   }
 
