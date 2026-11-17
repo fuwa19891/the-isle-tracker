@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Isle - Rex Duo Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- html2canvas Bibliothek für den Screenshot-Button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: rgba(22, 17, 13, 0.94);
+      --card-bg: rgba(16, 12, 9, 0.96);
+      --border-subtle: #4a3d30;
+      --text-main: #e6eae7;
+      --text-muted: #9c9183;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 135px 20px 30px 20px;
+      background-color: #0c0e0d;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .fossil-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 560px;
+      background: transparent; /* Transparent für perfekten Screenshot ohne Desktop-Hintergrund */
+    }
+
+    /* T-Rex Schädel oben mittig am Rahmen */
+    .rex-skull-peeker {
+      position: absolute;
+      top: -124px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 175px;
+      z-index: 25;
+      pointer-events: none;
+      filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.9));
+    }
+
+    /* Knochen- / Fossil-Rahmen */
+    .bone-frame {
+      position: relative;
+      background: linear-gradient(145deg, #dfd4be 0%, #bfb092 45%, #99896c 100%);
+      padding: 26px;
+      border-radius: 24px;
+      box-shadow: 
+        0 0 0 3px #4a4132,
+        inset 0 2px 4px rgba(255, 250, 240, 0.65),
+        inset 0 -3px 7px rgba(45, 38, 28, 0.8),
+        0 18px 40px rgba(0, 0, 0, 0.9);
+    }
+
+    /* Eingestanzte Skelett-Muster am Rahmen */
+    .frame-pattern-layer {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .frame-strip {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      opacity: 0.85;
+    }
+
+    .strip-top { top: 3px; left: 26px; right: 26px; height: 20px; }
+    .motif-rex-top { width: 52px; height: 20px; filter: drop-shadow(0 1px 0 rgba(255, 250, 240, 0.45)); }
+
+    .strip-bottom { bottom: 3px; left: 26px; right: 26px; height: 20px; flex-direction: row-reverse; }
+    .motif-rex-bottom { width: 52px; height: 20px; transform: scaleX(-1); filter: drop-shadow(0 1px 0 rgba(255, 250, 240, 0.45)); }
+
+    .strip-left { top: 26px; bottom: 26px; left: 3px; width: 20px; flex-direction: column-reverse; }
+    .motif-rex-left { width: 20px; height: 52px; filter: drop-shadow(1px 0 0 rgba(255, 250, 240, 0.45)); }
+
+    .strip-right { top: 26px; bottom: 26px; right: 3px; width: 20px; flex-direction: column; }
+    .motif-rex-right { width: 20px; height: 52px; filter: drop-shadow(1px 0 0 rgba(255, 250, 240, 0.45)); }
+
+    /* Innerer Tracker Inhalt */
+    .tracker-app {
+      position: relative;
+      z-index: 10;
+      background: 
+        linear-gradient(rgba(20, 15, 11, 0.88), rgba(15, 11, 8, 0.94)),
+        radial-gradient(circle at 50% 30%, #423222 0%, #1a130e 80%);
+      border: 2px solid #4a3d30;
+      border-radius: 14px;
+      padding: 16px 18px;
+      overflow: hidden;
+      box-shadow: 
+        0 0 0 1px rgba(255, 248, 231, 0.15),
+        inset 0 0 25px rgba(0, 0, 0, 0.85);
+    }
+
+    /* Fußabdruck-Spur im Hintergrund */
+    .footprints-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.085;
+      fill: #ffb753;
+    }
+
+    .top-bar, .score-card, .grid-header, .dino-grid, .footer-bar {
+      position: relative;
+      z-index: 2;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 14px;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #5ec985;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background-color: currentColor;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .score-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+
+    .duo-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2d241b;
+      margin-bottom: 12px;
+    }
+
+    .duo-badge {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      border-radius: 7px;
+      background: rgba(214, 79, 73, 0.14);
+      border: 1px solid rgba(214, 79, 73, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d64f49;
+    }
+
+    .duo-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .duo-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: 0.6px;
+      color: #f0ece1;
+      user-select: text;
+      cursor: text;
+      padding: 3px 7px;
+      margin: -3px -7px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+      outline: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .duo-title:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: #483b2d;
+    }
+
+    .duo-title:focus {
+      background: #231b14;
+      border-color: #dfd4be;
+      white-space: normal;
+      overflow: visible;
+    }
+
+    .edit-name-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      opacity: 0.6;
+      transition: opacity 0.15s, color 0.15s, background 0.15s;
+    }
+
+    .duo-header:hover .edit-name-btn { opacity: 1; }
+    .edit-name-btn:hover { color: #f0ece1; background: rgba(255, 255, 255, 0.07); }
+
+    .score-body {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .total-section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    .total-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1;
+      color: #f4f1ea;
+    }
+
+    .tier-box {
+      background: #15110d;
+      border: 1px solid #362c22;
+      border-radius: 9px;
+      padding: 8px 12px;
+      min-width: 128px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .tier-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .tier-name { display: flex; align-items: center; gap: 6px; }
+    .dot-apex { color: #e05a54; }
+    .dot-mittel { color: #e0a938; }
+    .dot-klein { color: #43b574; }
+    .tier-val { color: var(--text-main); }
+
+    .grid-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+
+    .grid-title { font-weight: 700; color: #b7beb9; letter-spacing: 0.6px; }
+    .grid-hint { color: var(--text-muted); font-size: 10.5px; }
+
+    .dino-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+
+    /* ECHTER BERNSTEIN-FOSSIL BUTTON 3D LOOK */
+    .dino-btn {
+      position: relative;
+      background: linear-gradient(145deg, #422812 0%, #261608 50%, #170d04 100%);
+      border: 2px solid #5a4128;
+      border-radius: 12px;
+      padding: 16px 8px 14px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow: 
+        inset 0 2px 5px rgba(255, 204, 102, 0.35),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.8),
+        0 4px 10px rgba(0, 0, 0, 0.5);
+      transition: transform 0.08s ease, border-color 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .dino-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 45%;
+      background: linear-gradient(to bottom, rgba(255, 230, 150, 0.18) 0%, rgba(255, 255, 255, 0) 100%);
+      border-radius: 10px 10px 50% 50%;
+      pointer-events: none;
+    }
+
+    .dino-btn:hover { 
+      border-color: #d4a373; 
+      box-shadow: inset 0 2px 7px rgba(255, 220, 130, 0.5), inset 0 -4px 8px rgba(0,0,0,0.8), 0 0 12px rgba(212, 163, 115, 0.35); 
+    }
+    .dino-btn:active { transform: scale(0.96); }
+
+    .amber-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(230, 138, 0, 0.5) 0%, rgba(255, 187, 51, 0.25) 100%);
+      transition: height 0.3s ease;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .dino-btn > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .dino-btn.amber-max {
+      background: linear-gradient(145deg, #663d0c 0%, #3d2204 50%, #211101 100%);
+      border-color: #ffb700;
+      box-shadow: 
+        inset 0 0 12px rgba(255, 204, 0, 0.6),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.8),
+        0 0 18px rgba(255, 183, 0, 0.5);
+    }
+    .dino-btn.amber-max .amber-fill {
+      background: linear-gradient(to top, rgba(255, 183, 0, 0.7) 0%, rgba(255, 221, 85, 0.45) 100%);
+    }
+
+    .tier-dot-corner {
+      position: absolute;
+      top: 7px;
+      left: 7px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .kill-badge {
+      position: absolute;
+      top: 5px;
+      right: 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      color: #ffe599;
+      background: rgba(30, 16, 4, 0.9);
+      border: 1px solid rgba(212, 143, 56, 0.6);
+      padding: 1px 5px;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.2);
+      display: none;
+    }
+
+    .dino-btn.has-kills .kill-badge { display: block; }
+    
+    .dino-name { 
+      font-size: 12px; 
+      font-weight: 700; 
+      letter-spacing: 0.5px;
+      font-family: 'JetBrains Mono', monospace;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+    }
+
+    .footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .log-text { font-size: 12px; font-style: italic; color: var(--text-muted); }
+    .footer-actions { display: flex; gap: 8px; }
+
+    .circle-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #33271d 0%, #1e150f 100%);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .circle-btn:hover { background: linear-gradient(145deg, #423528 0%, #2b2018 100%); color: var(--text-main); border-color: #d4a373; }
+    .circle-btn.sound-active { color: #f4b41a; border-color: rgba(244, 180, 26, 0.45); box-shadow: 0 0 8px rgba(244, 180, 26, 0.2); }
+    .circle-btn.camera-btn { color: #48cae4; border-color: rgba(72, 202, 228, 0.35); }
+    .circle-btn.camera-btn:hover { background: rgba(72, 202, 228, 0.15); border-color: #48cae4; color: #90e0ef; }
+    .circle-btn.reset-btn { color: #e05a54; border-color: rgba(224, 90, 84, 0.35); }
+    .circle-btn.reset-btn:hover { background: rgba(224, 90, 84, 0.15); }
+  </style>
+</head>
+<body>
+
+<svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="rex-skeleton" viewBox="0 0 120 48">
+    <g fill="#2b241b">
+      <path d="M4,12 C2,8 6,3 14,3 C20,3 24,5 25,9 L21,12 L15,12 L14,15 L22,16 L20,21 C14,22 8,20 6,16 L11,16 L11,14 L4,14 Z"/>
+      <path d="M24,7 L28,6 L28,10 L32,8 L32,12 L36,9 L36,13 L40,10 L40,14 L45,10 L45,14 L50,10 L50,14 L55,10 L55,14 L60,10 L60,14 L66,11 L66,14 L72,12 L72,14 L78,12 L78,14 L84,13 L84,15 L90,13 L90,15 L96,14 L96,15 L103,14 L118,16 L103,16 L60,16 L25,13 Z"/>
+      <path d="M28,13 Q26,18 29,21 M31,13 Q29,20 32,23 M34,13 Q32,22 36,26 M38,14 Q36,24 40,28 M42,14 Q40,25 44,29 M46,14 Q44,24 48,28 M50,14 Q48,23 51,26" stroke="#2b241b" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <path d="M68,16 L67,20 M73,16 L72,20 M78,16 L77,20 M83,16 L82,19 M88,16 L87,19 M93,16 L92,18 M98,16 L97,18" stroke="#2b241b" stroke-width="1.1" fill="none"/>
+      <path d="M26,15 L23,19 L19,19 M23,19 L20,21" stroke="#2b241b" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M51,14 L62,14 L61,20 L55,22 L52,18 Z"/>
+      <path d="M55,19 L49,28 L51,37 L44,43 L48,43 L52,39 L55,42 L53,37 L52,28 L57,20 Z"/>
+      <path d="M59,19 L64,28 L69,36 L63,41 L67,41 L71,37 L73,40 L71,36 L67,27 L61,19 Z"/>
+    </g>
+  </symbol>
+
+  <symbol id="footprint" viewBox="0 0 100 100">
+    <path d="M50,10 C42,10 38,20 40,32 C41,40 37,45 32,48 C24,52 22,65 30,72 C36,78 44,76 48,70 C50,67 50,67 52,70 C56,76 64,78 70,72 C78,65 76,52 68,48 C63,45 59,40 60,32 C62,20 58,10 50,10 Z M38,78 C32,80 30,86 34,90 C38,94 45,92 50,86 C55,92 62,94 66,90 C70,86 68,80 62,78 C56,76 44,76 38,78 Z"/>
+  </symbol>
+</svg>
+
+<div class="fossil-wrapper" id="capture-area">
+  <!-- T-Rex Schädel oben mittig (jetzt direkt im Screenshot-Bereich enthalten) -->
+  <svg class="rex-skull-peeker" viewBox="0 0 260 230" xmlns="http://www.w3.org/2000/svg">
+    <path d="M58,14 C82,6 135,18 175,26 C214,34 242,46 248,68 C252,82 246,98 238,104 L232,126 L224,106 L216,130 L208,108 L198,132 L190,108 L180,126 L172,106 L162,120 L154,104 L144,116 L136,102 L122,110 L144,148 C156,168 172,182 188,184 L194,162 L202,184 L208,164 L214,186 L218,176 C222,196 208,218 182,222 C152,226 112,202 76,168 C46,140 24,116 14,98 C8,88 14,76 26,72 C24,52 38,22 58,14 Z" fill="#181410"/>
+    <path d="M62,20 C84,12 134,24 172,32 C208,40 234,50 240,68 C244,80 238,92 232,96 C210,88 182,94 150,98 C126,102 104,98 84,84 L62,98 L34,82 C30,60 42,28 62,20 Z" fill="#d9cab0"/>
+    <path d="M90,74 C126,82 174,80 234,88 C230,96 202,94 152,98 C124,102 102,96 86,84 Z" fill="#9c8a6c"/>
+    <path d="M68,24 C92,18 134,28 170,36 C198,42 222,50 230,62 C210,54 174,48 138,40 C104,32 82,26 68,24 Z" fill="#efe4d0"/>
+    <path d="M68,32 C78,28 88,36 86,50 C84,60 72,62 66,52 C62,44 62,35 68,32 Z" fill="#181410"/>
+    <path d="M74,35 C80,35 83,42 81,48 C77,46 74,40 74,35 Z" fill="#b5a384"/>
+    <path d="M102,42 C118,38 134,48 132,66 C130,80 112,84 100,74 C92,66 92,46 102,42 Z" fill="#181410"/>
+    <path d="M114,46 C124,46 128,56 125,65 C120,62 115,54 114,46 Z" fill="#cbb99b"/>
+    <path d="M148,52 C164,50 180,58 178,72 C176,82 158,84 146,76 C140,70 140,56 148,52 Z" fill="#181410"/>
+    <path d="M204,56 C216,56 226,64 224,74 C222,80 208,80 202,72 C198,66 198,58 204,56 Z" fill="#181410"/>
+    <path d="M56,38 L66,46 M92,26 L98,36 M140,34 L144,46 M184,46 L188,62 M194,64 L192,82 M176,78 L174,90" stroke="#181410" stroke-width="2.5" stroke-linecap="round"/>
+    <polygon points="234,94 231,122 224,95" fill="#ebe0cb" stroke="#181410" stroke-width="2"/>
+    <polygon points="222,95 216,128 209,96" fill="#f3ead8" stroke="#181410" stroke-width="2"/>
+    <polygon points="207,96 199,129 192,97" fill="#e5d7be" stroke="#181410" stroke-width="2"/>
+    <polygon points="190,97 181,124 174,98" fill="#f3ead8" stroke="#181410" stroke-width="2"/>
+    <polygon points="172,98 163,118 156,99" fill="#dfd0b5" stroke="#181410" stroke-width="2"/>
+    <polygon points="154,99 145,114 138,100" fill="#ebe0cb" stroke="#181410" stroke-width="2"/>
+    <polygon points="136,100 128,110 122,100" fill="#d6c5a7" stroke="#181410" stroke-width="2"/>
+    <path d="M24,84 L58,96 C84,124 114,158 148,180 C172,194 196,196 212,186 C214,202 198,214 176,216 C148,218 110,194 76,160 C48,132 28,108 20,92 C18,88 20,84 24,84 Z" fill="#d5c4a6"/>
+    <path d="M36,106 C68,142 114,186 164,204 C186,210 202,206 210,196 C204,210 186,216 164,214 C128,210 82,168 48,132 Z" fill="#968365"/>
+    <path d="M68,124 C80,126 92,138 90,148 C88,154 74,148 66,138 C62,132 62,124 68,124 Z" fill="#181410"/>
+    <path d="M46,98 L54,112 M104,152 L114,166 M136,178 L146,192 M168,192 L174,204" stroke="#181410" stroke-width="2.5" stroke-linecap="round"/>
+    <polygon points="208,188 214,168 201,188" fill="#ebe0cb" stroke="#181410" stroke-width="2"/>
+    <polygon points="199,188 202,162 191,186" fill="#f3ead8" stroke="#181410" stroke-width="2"/>
+    <polygon points="189,186 190,160 180,183" fill="#e5d7be" stroke="#181410" stroke-width="2"/>
+    <polygon points="178,183 177,162 168,179" fill="#f3ead8" stroke="#181410" stroke-width="2"/>
+    <polygon points="166,178 164,160 156,173" fill="#dfd0b5" stroke="#181410" stroke-width="2"/>
+    <polygon points="154,172 151,156 144,166" fill="#ebe0cb" stroke="#181410" stroke-width="2"/>
+  </svg>
+
+  <div class="bone-frame">
+    <div class="frame-pattern-layer">
+      <div class="frame-strip strip-top">
+        <svg class="motif-rex-top"><use href="#rex-skeleton"/></svg>
+        <svg class="motif-rex-top"><use href="#rex-skeleton"/></svg>
+        <svg class="motif-rex-top"><use href="#rex-skeleton"/></svg>
+        <svg class="motif-rex-top"><use href="#rex-skeleton"/></svg>
+      </div>
+
+      <div class="frame-strip strip-right">
+        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+      </div>
+
+      <div class="frame-strip strip-bottom">
+        <svg class="motif-rex-bottom"><use href="#rex-skeleton"/></svg>
+        <svg class="motif-rex-bottom"><use href="#rex-skeleton"/></svg>
+        <svg class="motif-rex-bottom"><use href="#rex-skeleton"/></svg>
+        <svg class="motif-rex-bottom"><use href="#rex-skeleton"/></svg>
+      </div>
+
+      <div class="frame-strip strip-left">
+        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
+      </div>
+    </div>
+
+    <div class="tracker-app">
+      <svg class="footprints-bg" viewBox="0 0 400 600" preserveAspectRatio="none">
+        <use href="#footprint" x="280" y="470" width="130" height="130" transform="rotate(15 345 535)"/>
+        <use href="#footprint" x="80" y="320" width="95" height="95" transform="rotate(-15 127 367)"/>
+        <use href="#footprint" x="220" y="170" width="70" height="70" transform="rotate(10 255 205)"/>
+        <use href="#footprint" x="140" y="50" width="45" height="45" transform="rotate(-10 162 72)"/>
+      </svg>
+
+      <div class="top-bar">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span>WIDGET-MODUS</span>
+        </div>
+      </div>
+
+      <div class="score-card">
+        <div class="duo-header">
+          <div class="duo-badge">
+            <svg width="16" height="16" viewBox="0 0 32 20" fill="currentColor">
+              <path d="M26,4 C28,4 30,5 30,7 C30,8 28,9 26,9 L23,9 L21,13 L23,18 L20,18 L18,14 L14,14 L12,18 L9,18 L11,13 L3,15 L1,13 L11,9 C14,6 20,4 26,4 Z"/>
+            </svg>
+          </div>
+          <div class="duo-title-wrap">
+            <span class="duo-title" id="duo-title" contenteditable="true" spellcheck="false" title="Klicken zum Bearbeiten">Name &amp; Name</span>
+            <button class="edit-name-btn" onclick="focusDuoTitle()" title="Namen bearbeiten">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="score-body">
+          <div>
+            <div class="total-section-label">GEMEINSAME KILLS</div>
+            <div class="total-number" id="total-kills">0</div>
+          </div>
+
+          <div class="tier-box">
+            <div class="tier-row">
+              <span class="tier-name dot-apex">● APEX</span>
+              <span class="tier-val" id="count-apex">0</span>
+            </div>
+            <div class="tier-row">
+              <span class="tier-name dot-mittel">● MITTEL</span>
+              <span class="tier-val" id="count-mittel">0</span>
+            </div>
+            <div class="tier-row">
+              <span class="tier-name dot-klein">● KLEIN</span>
+              <span class="tier-val" id="count-klein">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-header">
+        <span class="grid-title">BEUTE ANTIPPEN (+1 KILL)</span>
+        <span class="grid-hint">Rechtsklick: -1 · [Z]: Undo</span>
+      </div>
+
+      <div class="dino-grid" id="dino-grid"></div>
+
+      <div class="footer-bar">
+        <span class="log-text" id="status-log">Bereit für die Jagd...</span>
+        <div class="footer-actions">
+          <button class="circle-btn camera-btn" onclick="takeScreenshot()" title="Screenshot vom Widget erstellen">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+          </button>
+          <button class="circle-btn" onclick="undoLast()" title="Rückgängig [Z]">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
+            </svg>
+          </button>
+          <button class="circle-btn sound-active" id="sound-btn" onclick="toggleSound()" title="Sound umschalten">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+          </button>
+          <button class="circle-btn reset-btn" onclick="resetTracker()" title="Alle Kills zurücksetzen">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const DINOS = [
+    { id: 'rex',    name: 'Rex',       tier: 'apex',   color: '#e56b6f' },
+    { id: 'trike',  name: 'Trike',     tier: 'apex',   color: '#e6b83a' },
+    { id: 'stego',  name: 'Stego',     tier: 'apex',   color: '#52b788' },
+    { id: 'deino',  name: 'Deino',     tier: 'apex',   color: '#4ea8de' },
+    { id: 'diablo', name: 'Diablo',    tier: 'mittel', color: '#8ac926' },
+    { id: 'carno',  name: 'Carno',     tier: 'mittel', color: '#e07a38' },
+    { id: 'cera',   name: 'Cera',      tier: 'mittel', color: '#e56b6f' },
+    { id: 'allo',   name: 'Allo',      tier: 'mittel', color: '#d4a373' },
+    { id: 'maia',   name: 'Maia',      tier: 'mittel', color: '#3a86ff' },
+    { id: 'tenonto',name: 'Tenonto',   tier: 'klein',  color: '#48cae4' },
+    { id: 'omni',   name: 'Omni',      tier: 'klein',  color: '#9d4edd' },
+    { id: 'dilo',   name: 'Dilo/Herr', tier: 'klein',  color: '#aacc00' },
+    { id: 'juvi',   name: 'Juvi/Klein',tier: 'klein',  color: '#9d4edd' }
+  ];
+
+  const TIER_DOT_COLORS = {
+    apex: '#e05a54',
+    mittel: '#e0a938',
+    klein: '#43b574'
+  };
+
+  let state = {
+    kills: {},
+    history: [],
+    sound: true,
+    duoTitle: 'Name & Name'
+  };
+
+  DINOS.forEach(d => state.kills[d.id] = 0);
+
+  function init() {
+    setupTitleEditor();
+    localStorage.removeItem('rex_duo_tracker_clean_v1');
+    renderGrid();
+    updateUI();
+  }
+
+  function setupTitleEditor() {
+    const titleEl = document.getElementById('duo-title');
+    titleEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        titleEl.blur();
+      }
+    });
+
+    titleEl.addEventListener('blur', () => {
+      const cleanName = titleEl.textContent.trim().replace(/\s+/g, ' ');
+      state.duoTitle = cleanName || 'Name & Name';
+      titleEl.textContent = state.duoTitle;
+      setLog(`Namen gespeichert: ${state.duoTitle}`);
+    });
+  }
+
+  function focusDuoTitle() {
+    const titleEl = document.getElementById('duo-title');
+    titleEl.focus();
+    const range = document.createRange();
+    range.selectNodeContents(titleEl);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById('dino-grid');
+    grid.innerHTML = '';
+
+    DINOS.forEach(dino => {
+      const btn = document.createElement('button');
+      btn.className = 'dino-btn';
+      btn.id = `btn-${dino.id}`;
+      
+      btn.innerHTML = `
+        <div class="amber-fill" id="fill-${dino.id}" style="height: 0%;"></div>
+        <span class="tier-dot-corner" style="background:${TIER_DOT_COLORS[dino.tier]}"></span>
+        <span class="kill-badge" id="badge-${dino.id}">0</span>
+        <span class="dino-name" style="color: ${dino.color};">${dino.name}</span>
+      `;
+
+      btn.addEventListener('click', () => addKill(dino.id, 1));
+      btn.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        addKill(dino.id, -1);
+      });
+
+      grid.appendChild(btn);
+    });
+  }
+
+  function addKill(dinoId, delta) {
+    if (delta < 0 && (state.kills[dinoId] || 0) <= 0) return;
+
+    state.kills[dinoId] = Math.max(0, (state.kills[dinoId] || 0) + delta);
+    state.history.push({ dinoId, delta });
+
+    const dino = DINOS.find(d => d.id === dinoId);
+    setLog(delta > 0 ? `+1 ${dino.name} erlegt!` : `-1 ${dino.name} korrigiert`);
+
+    if (state.sound) playClickSound(delta > 0 ? 520 : 280);
+    updateUI();
+  }
+
+  function undoLast() {
+    if (state.history.length === 0) return;
+    const last = state.history.pop();
+    state.kills[last.dinoId] = Math.max(0, (state.kills[last.dinoId] || 0) - last.delta);
+    const dino = DINOS.find(d => d.id === last.dinoId);
+    setLog(`Rückgängig: ${dino.name}`);
+    if (state.sound) playClickSound(340);
+    updateUI();
+  }
+
+  function resetTracker() {
+    DINOS.forEach(d => state.kills[d.id] = 0);
+    state.history = [];
+    setLog('Tracker zurückgesetzt.');
+    updateUI();
+  }
+
+  function updateUI() {
+    let total = 0;
+    let apex = 0, mittel = 0, klein = 0;
+
+    DINOS.forEach(d => {
+      const count = state.kills[d.id] || 0;
+      total += count;
+      if (d.tier === 'apex') apex += count;
+      if (d.tier === 'mittel') mittel += count;
+      if (d.tier === 'klein') klein += count;
+
+      const btn = document.getElementById(`btn-${d.id}`);
+      const badge = document.getElementById(`badge-${d.id}`);
+      const fill = document.getElementById(`fill-${d.id}`);
+
+      if (btn && badge && fill) {
+        badge.textContent = count;
+        btn.classList.toggle('has-kills', count > 0);
+
+        let percent = Math.min(100, (count / 20) * 100);
+        fill.style.height = percent + '%';
+        btn.classList.toggle('amber-max', count >= 20);
+      }
+    });
+
+    document.getElementById('total-kills').textContent = total;
+    document.getElementById('count-apex').textContent = apex;
+    document.getElementById('count-mittel').textContent = mittel;
+    document.getElementById('count-klein').textContent = klein;
+
+    const titleEl = document.getElementById('duo-title');
+    if (document.activeElement !== titleEl && titleEl.textContent !== state.duoTitle) {
+      titleEl.textContent = state.duoTitle;
+    }
+
+    const soundBtn = document.getElementById('sound-btn');
+    soundBtn.classList.toggle('sound-active', state.sound);
+  }
+
+  function setLog(msg) {
+    document.getElementById('status-log').textContent = msg;
+  }
+
+  function toggleSound() {
+    state.sound = !state.sound;
+    updateUI();
+  }
+
+  function takeScreenshot() {
+    setLog('Erstelle Screenshot...');
+    const element = document.getElementById('capture-area');
+    
+    html2canvas(element, {
+      backgroundColor: null, // Transparenter Hintergrund außerhalb des Rahmens
+      scale: 2 // Hohe Auflösung für scharfe Bilder
+    }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `The-Isle-KillTracker-${state.duoTitle.replace(/\s+/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      setLog('Screenshot gespeichert!');
+    }).catch(err => {
+      setLog('Fehler beim Screenshot.');
+    });
+  }
+
+  function playClickSound(freq) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.12);
+    } catch (e) {}
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (document.activeElement && document.activeElement.isContentEditable) return;
+    if (e.key.toLowerCase() === 'z') undoLast();
+  });
+
+  init();
+</script>
+</body>
+</html>
