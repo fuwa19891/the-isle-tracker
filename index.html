@@ -359,10 +359,12 @@
       margin-bottom: 16px;
     }
 
-    /* ECHTER BERNSTEIN-FOSSIL BUTTON 3D LOOK */
+    /* ECHTER BERNSTEIN-BILD BUTTON LOOK */
     .dino-btn {
       position: relative;
-      background: linear-gradient(145deg, #422812 0%, #261608 50%, #170d04 100%);
+      background-image: url('amber-stone.png');
+      background-size: cover;
+      background-position: center;
       border: 2px solid #5a4128;
       border-radius: 12px;
       padding: 16px 8px 14px 8px;
@@ -374,27 +376,27 @@
       cursor: pointer;
       overflow: hidden;
       box-shadow: 
-        inset 0 2px 5px rgba(255, 204, 102, 0.35),
-        inset 0 -4px 8px rgba(0, 0, 0, 0.8),
-        0 4px 10px rgba(0, 0, 0, 0.5);
+        inset 0 0 12px rgba(255, 204, 51, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.6);
       transition: transform 0.08s ease, border-color 0.15s ease, box-shadow 0.2s ease;
     }
 
+    /* Dunkler Schleier über dem Bernstein für perfekten Textkontrast */
     .dino-btn::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 10%;
-      right: 10%;
-      height: 45%;
-      background: linear-gradient(to bottom, rgba(255, 230, 150, 0.18) 0%, rgba(255, 255, 255, 0) 100%);
-      border-radius: 10px 10px 50% 50%;
+      inset: 0;
+      background: rgba(18, 11, 5, 0.52);
+      border-radius: 10px;
       pointer-events: none;
+      z-index: 1;
     }
 
     .dino-btn:hover { 
-      border-color: #d4a373; 
-      box-shadow: inset 0 2px 7px rgba(255, 220, 130, 0.5), inset 0 -4px 8px rgba(0,0,0,0.8), 0 0 12px rgba(212, 163, 115, 0.35); 
+      border-color: #ffd000; 
+      box-shadow: 
+        inset 0 0 18px rgba(255, 220, 100, 0.7),
+        0 0 14px rgba(255, 183, 0, 0.4); 
     }
     .dino-btn:active { transform: scale(0.96); }
 
@@ -403,27 +405,25 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(to top, rgba(230, 138, 0, 0.5) 0%, rgba(255, 187, 51, 0.25) 100%);
+      background: linear-gradient(to top, rgba(255, 153, 0, 0.45) 0%, rgba(255, 204, 51, 0.2) 100%);
       transition: height 0.3s ease;
-      z-index: 0;
+      z-index: 2;
       pointer-events: none;
     }
 
     .dino-btn > * {
       position: relative;
-      z-index: 1;
+      z-index: 3;
     }
 
     .dino-btn.amber-max {
-      background: linear-gradient(145deg, #663d0c 0%, #3d2204 50%, #211101 100%);
       border-color: #ffb700;
       box-shadow: 
-        inset 0 0 12px rgba(255, 204, 0, 0.6),
-        inset 0 -4px 8px rgba(0, 0, 0, 0.8),
-        0 0 18px rgba(255, 183, 0, 0.5);
+        inset 0 0 20px rgba(255, 204, 0, 0.7),
+        0 0 20px rgba(255, 183, 0, 0.6);
     }
     .dino-btn.amber-max .amber-fill {
-      background: linear-gradient(to top, rgba(255, 183, 0, 0.7) 0%, rgba(255, 221, 85, 0.45) 100%);
+      background: linear-gradient(to top, rgba(255, 183, 0, 0.65) 0%, rgba(255, 221, 85, 0.4) 100%);
     }
 
     .tier-dot-corner {
@@ -443,8 +443,8 @@
       font-size: 10px;
       font-weight: 800;
       color: #ffe599;
-      background: rgba(30, 16, 4, 0.9);
-      border: 1px solid rgba(212, 143, 56, 0.6);
+      background: rgba(20, 10, 3, 0.95);
+      border: 1px solid rgba(212, 143, 56, 0.7);
       padding: 1px 5px;
       border-radius: 4px;
       box-shadow: inset 0 1px 2px rgba(255,255,255,0.2);
@@ -458,7 +458,7 @@
       font-weight: 700; 
       letter-spacing: 0.5px;
       font-family: 'JetBrains Mono', monospace;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.95);
     }
 
     .footer-bar {
@@ -702,19 +702,19 @@
 
 <script>
   const DINOS = [
-    { id: 'rex',    name: 'Rex',       tier: 'apex',   color: '#e56b6f' },
-    { id: 'trike',  name: 'Trike',     tier: 'apex',   color: '#e6b83a' },
-    { id: 'stego',  name: 'Stego',     tier: 'apex',   color: '#52b788' },
-    { id: 'deino',  name: 'Deino',     tier: 'apex',   color: '#4ea8de' },
-    { id: 'diablo', name: 'Diablo',    tier: 'mittel', color: '#8ac926' },
-    { id: 'carno',  name: 'Carno',     tier: 'mittel', color: '#e07a38' },
-    { id: 'cera',   name: 'Cera',      tier: 'mittel', color: '#e56b6f' },
-    { id: 'allo',   name: 'Allo',      tier: 'mittel', color: '#d4a373' },
-    { id: 'maia',   name: 'Maia',      tier: 'mittel', color: '#3a86ff' },
-    { id: 'tenonto',name: 'Tenonto',   tier: 'klein',  color: '#48cae4' },
-    { id: 'omni',   name: 'Omni',      tier: 'klein',  color: '#9d4edd' },
-    { id: 'dilo',   name: 'Dilo/Herr', tier: 'klein',  color: '#aacc00' },
-    { id: 'juvi',   name: 'Juvi/Klein',tier: 'klein',  color: '#9d4edd' }
+    { id: 'rex',    name: 'Rex',       tier: 'apex',   color: '#ff8a8a' },
+    { id: 'trike',  name: 'Trike',     tier: 'apex',   color: '#ffd25a' },
+    { id: 'stego',  name: 'Stego',     tier: 'apex',   color: '#73e2a7' },
+    { id: 'deino',  name: 'Deino',     tier: 'apex',   color: '#70c1ff' },
+    { id: 'diablo', name: 'Diablo',    tier: 'mittel', color: '#b5ff48' },
+    { id: 'carno',  name: 'Carno',     tier: 'mittel', color: '#ffa05c' },
+    { id: 'cera',   name: 'Cera',      tier: 'mittel', color: '#ff8a8a' },
+    { id: 'allo',   name: 'Allo',      tier: 'mittel', color: '#ffcc80' },
+    { id: 'maia',   name: 'Maia',      tier: 'mittel', color: '#6eb5ff' },
+    { id: 'tenonto',name: 'Tenonto',   tier: 'klein',  color: '#84e6ff' },
+    { id: 'omni',   name: 'Omni',      tier: 'klein',  color: '#c784ff' },
+    { id: 'dilo',   name: 'Dilo/Herr', tier: 'klein',  color: '#ccff48' },
+    { id: 'juvi',   name: 'Juvi/Klein',tier: 'klein',  color: '#c784ff' }
   ];
 
   const TIER_DOT_COLORS = {
@@ -743,7 +743,6 @@
   }
 
   function setGameMode(mode) {
-    // Alten Namen im State zwischenspeichern bevor wir wechseln
     const titleEl = document.getElementById('duo-title');
     if (state.mode === 'duo') {
       state.duoTitle = titleEl.textContent.trim() || 'Name & Name';
@@ -757,9 +756,7 @@
     document.getElementById('mode-label').textContent = `WIDGET-MODUS (${mode.toUpperCase()})`;
     document.getElementById('total-label').textContent = mode === 'solo' ? 'SOLO KILLS' : 'GEMEINSAME KILLS';
     
-    // Titel entsprechend des gewählten Modus einsetzen
     titleEl.textContent = mode === 'solo' ? state.soloTitle : state.duoTitle;
-
     setLog(`Modus gewechselt: ${mode.toUpperCase()}`);
   }
 
@@ -906,7 +903,6 @@
     updateUI();
   }
 
-  // Erstellt die saubere Dino-Auflistung für Discord mit Solo/Duo und Spieler-Dino
   function copyDinoList() {
     let total = document.getElementById('total-kills').textContent;
     let activeDinosText = '';
