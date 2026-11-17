@@ -26,7 +26,7 @@
 
     body {
       margin: 0;
-      padding: 135px 20px 30px 20px;
+      padding: 95px 20px 30px 20px;
       background-color: #0c0e0d;
       color: var(--text-main);
       font-family: 'Inter', sans-serif;
@@ -42,16 +42,42 @@
       max-width: 560px;
     }
 
-    /* T-Rex Schädel oben mittig am Rahmen */
-    .rex-skull-peeker {
+    /* Neuer "The Isle - Kill Tracker" Schriftzug oben mittig am Rahmen */
+    .tracker-header-badge {
       position: absolute;
-      top: -124px;
+      top: -44px;
       left: 50%;
       transform: translateX(-50%);
-      width: 175px;
+      background: linear-gradient(145deg, #2b231a 0%, #17110c 100%);
+      border: 2px solid #5c4938;
+      padding: 8px 22px;
+      border-radius: 12px;
       z-index: 25;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.85), inset 0 1px 3px rgba(255, 255, 255, 0.15);
+      white-space: nowrap;
       pointer-events: none;
-      filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.9));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .badge-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      color: #d4a373;
+      text-transform: uppercase;
+    }
+
+    .badge-main {
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: 16px;
+      letter-spacing: 1.2px;
+      color: #f4f1ea;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.9);
     }
 
     /* Knochen- / Fossil-Rahmen */
@@ -536,37 +562,11 @@
 </svg>
 
 <div class="fossil-wrapper">
-  <!-- T-Rex Schädel oben mittig -->
-  <svg class="rex-skull-peeker" viewBox="0 0 260 230" xmlns="http://www.w3.org/2000/svg">
-    <path d="M58,14 C82,6 135,18 175,26 C214,34 242,46 248,68 C252,82 246,98 238,104 L232,126 L224,106 L216,130 L208,108 L198,132 L190,108 L180,126 L172,106 L162,120 L154,104 L144,116 L136,102 L122,110 L144,148 C156,168 172,182 188,184 L194,162 L202,184 L208,164 L214,186 L218,176 C222,196 208,218 182,222 C152,226 112,202 76,168 C46,140 24,116 14,98 C8,88 14,76 26,72 C24,52 38,22 58,14 Z" fill="#181410"/>
-    <path d="M62,20 C84,12 134,24 172,32 C208,40 234,50 240,68 C244,80 238,92 232,96 C210,88 182,94 150,98 C126,102 104,98 84,84 L62,98 L34,82 C30,60 42,28 62,20 Z" fill="#d9cab0"/>
-    <path d="M90,74 C126,82 174,80 234,88 C230,96 202,94 152,98 C124,102 102,96 86,84 Z" fill="#9c8a6c"/>
-    <path d="M68,24 C92,18 134,28 170,36 C198,42 222,50 230,62 C210,54 174,48 138,40 C104,32 82,26 68,24 Z" fill="#efe4d0"/>
-    <path d="M68,32 C78,28 88,36 86,50 C84,60 72,62 66,52 C62,44 62,35 68,32 Z" fill="#181410"/>
-    <path d="M74,35 C80,35 83,42 81,48 C77,46 74,40 74,35 Z" fill="#b5a384"/>
-    <path d="M102,42 C118,38 134,48 132,66 C130,80 112,84 100,74 C92,66 92,46 102,42 Z" fill="#181410"/>
-    <path d="M114,46 C124,46 128,56 125,65 C120,62 115,54 114,46 Z" fill="#cbb99b"/>
-    <path d="M148,52 C164,50 180,58 178,72 C176,82 158,84 146,76 C140,70 140,56 148,52 Z" fill="#181410"/>
-    <path d="M204,56 C216,56 226,64 224,74 C222,80 208,80 202,72 C198,66 198,58 204,56 Z" fill="#181410"/>
-    <path d="M56,38 L66,46 M92,26 L98,36 M140,34 L144,46 M184,46 L188,62 M194,64 L192,82 M176,78 L174,90" stroke="#181410" stroke-width="2.5" stroke-linecap="round"/>
-    <polygon points="234,94 231,122 224,95" fill="#ebe0cb" stroke="#181410" stroke-width="2"/>
-    <polygon points="222,95 216,128 209,96" fill="#f3ead8" stroke="#181410" stroke-width="2"/>
-    <polygon points="207,96 199,129 192,97" fill="#e5d7be" stroke="#181410" stroke-width="2"/>
-    <polygon points="190,97 181,124 174,98" fill="#f3ead8" stroke="#181410" stroke-width="2"/>
-    <polygon points="172,98 163,118 156,99" fill="#dfd0b5" stroke="#181410" stroke-width="2"/>
-    <polygon points="154,99 145,114 138,100" fill="#ebe0cb" stroke="#181410" stroke-width="2"/>
-    <polygon points="136,100 128,110 122,100" fill="#d6c5a7" stroke="#181410" stroke-width="2"/>
-    <path d="M24,84 L58,96 C84,124 114,158 148,180 C172,194 196,196 212,186 C214,202 198,214 176,216 C148,218 110,194 76,160 C48,132 28,108 20,92 C18,88 20,84 24,84 Z" fill="#d5c4a6"/>
-    <path d="M36,106 C68,142 114,186 164,204 C186,210 202,206 210,196 C204,210 186,216 164,214 C128,210 82,168 48,132 Z" fill="#968365"/>
-    <path d="M68,124 C80,126 92,138 90,148 C88,154 74,148 66,138 C62,132 62,124 68,124 Z" fill="#181410"/>
-    <path d="M46,98 L54,112 M104,152 L114,166 M136,178 L146,192 M168,192 L174,204" stroke="#181410" stroke-width="2.5" stroke-linecap="round"/>
-    <polygon points="208,188 214,168 201,188" fill="#ebe0cb" stroke="#181410" stroke-width="2"/>
-    <polygon points="199,188 202,162 191,186" fill="#f3ead8" stroke="#181410" stroke-width="2"/>
-    <polygon points="189,186 190,160 180,183" fill="#e5d7be" stroke="#181410" stroke-width="2"/>
-    <polygon points="178,183 177,162 168,179" fill="#f3ead8" stroke="#181410" stroke-width="2"/>
-    <polygon points="166,178 164,160 156,173" fill="#dfd0b5" stroke="#181410" stroke-width="2"/>
-    <polygon points="154,172 151,156 144,166" fill="#ebe0cb" stroke="#181410" stroke-width="2"/>
-  </svg>
+  <!-- Neuer "The Isle - Kill Tracker" Schriftzug oben -->
+  <div class="tracker-header-badge">
+    <span class="badge-sub">The Isle</span>
+    <span class="badge-main">Kill Tracker</span>
+  </div>
 
   <div class="bone-frame">
     <div class="frame-pattern-layer">
