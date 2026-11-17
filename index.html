@@ -792,8 +792,8 @@
     updateUI();
   }
 
-  // Erstellt die saubere Dino-Auflistung für Discord und kopiert sie in die Zwischenablage
-  async function copyDinoList() {
+  // Narrensichere Methode für die Zwischenablage ohne Browser-Blockaden (Dino-Liste)
+  function copyDinoList() {
     let total = document.getElementById('total-kills').textContent;
     let activeDinosText = '';
 
@@ -810,13 +810,26 @@
 
     let discordOutput = `🦖 **The Isle Kill-Tracker** [${state.duoTitle}] 🦖\n\nGemeinsame Kills: **${total}**\n----------------------------\n${activeDinosText}`;
 
+    const textarea = document.createElement('textarea');
+    textarea.value = discordOutput;
+    textarea.style.position = 'fixed';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
     try {
-      await navigator.clipboard.writeText(discordOutput);
-      setLog('Dino-Liste in Zwischenablage kopiert! [Strg+V]');
-      if (state.sound) playClickSound(600);
-    } catch (e) {
-      setLog('Fehler beim Kopieren.');
+      const successful = document.execCommand('copy');
+      if (successful) {
+        setLog('Dino-Liste kopiert! [Strg+V bereit]');
+        if (state.sound) playClickSound(600);
+      } else {
+        setLog('Kopieren fehlgeschlagen.');
+      }
+    } catch (err) {
+      setLog('Browser blockiert Zwischenablage.');
     }
+
+    document.body.removeChild(textarea);
   }
 
   function playClickSound(freq) {
