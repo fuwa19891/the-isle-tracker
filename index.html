@@ -432,6 +432,8 @@
     }
     .circle-btn:hover { background: linear-gradient(145deg, #423528 0%, #2b2018 100%); color: var(--text-main); border-color: #d4a373; }
     .circle-btn.sound-active { color: #f4b41a; border-color: rgba(244, 180, 26, 0.45); box-shadow: 0 0 8px rgba(244, 180, 26, 0.2); }
+    .circle-btn.camera-btn { color: #48cae4; border-color: rgba(72, 202, 228, 0.35); }
+    .circle-btn.camera-btn:hover { background: rgba(72, 202, 228, 0.15); border-color: #48cae4; color: #90e0ef; }
     .circle-btn.reset-btn { color: #e05a54; border-color: rgba(224, 90, 84, 0.35); }
     .circle-btn.reset-btn:hover { background: rgba(224, 90, 84, 0.15); }
   </style>
@@ -457,7 +459,7 @@
   </symbol>
 </svg>
 
-<div class="fossil-wrapper">
+<div class="fossil-wrapper" id="capture-area">
   <!-- T-Rex Schädel oben mittig -->
   <svg class="rex-skull-peeker" viewBox="0 0 260 230" xmlns="http://www.w3.org/2000/svg">
     <path d="M58,14 C82,6 135,18 175,26 C214,34 242,46 248,68 C252,82 246,98 238,104 L232,126 L224,106 L216,130 L208,108 L198,132 L190,108 L180,126 L172,106 L162,120 L154,104 L144,116 L136,102 L122,110 L144,148 C156,168 172,182 188,184 L194,162 L202,184 L208,164 L214,186 L218,176 C222,196 208,218 182,222 C152,226 112,202 76,168 C46,140 24,116 14,98 C8,88 14,76 26,72 C24,52 38,22 58,14 Z" fill="#181410"/>
@@ -589,6 +591,12 @@
       <div class="footer-bar">
         <span class="log-text" id="status-log">Bereit für die Jagd...</span>
         <div class="footer-actions">
+          <button class="circle-btn camera-btn" onclick="copyScreenshot()" title="Screenshot in die Zwischenablage kopieren">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+          </button>
           <button class="circle-btn" onclick="undoLast()" title="Rückgängig [Z]">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
@@ -782,6 +790,72 @@
   function toggleSound() {
     state.sound = !state.sound;
     updateUI();
+  }
+
+  // Leistungsstarker Screenshot-Generator via SVG-DataURI (CORS-sicher!)
+  async function copyScreenshot() {
+    setLog('Kopiere Screenshot...');
+    try {
+      const el = document.getElementById('capture-area');
+      const rect = el.getBoundingClientRect();
+      
+      // Wir serialisieren das Widget samt Styling in ein eigenständiges SVG-Bild
+      const htmlContent = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${rect.width}" height="${rect.height + 130}">
+          <foreignObject width="100%" height="100%">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+              <style>
+                ${Array.from(document.styleSheets).map(sheet => {
+                  try { return Array.from(sheet.cssRules).map(rule => rule.cssText).join(''); }
+                  catch (e) { return ''; }
+                }).join('')}
+                body { background: transparent !important; margin: 0; padding-top: 130px; }
+                .fossil-wrapper { margin: 0 auto; }
+              </style>
+              <div style="padding-top: 130px; background: transparent;">
+                ${el.outerHTML}
+              </div>
+            </div>
+          </foreignObject>
+        </svg>
+      `;
+
+      const blob = new Blob([htmlContent], { type: 'image/svg+xml;charset=utf-8' });
+      const URL = window.URL || window.webkitURL || window;
+      const blobURL = URL.createObjectURL(blob);
+
+      const img = new Image();
+      img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = rect.width * 2; // Doppelte Auflösung für Schärfe
+        canvas.height = (rect.height + 130) * 2;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(2, 2);
+        
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(blobURL);
+
+        canvas.toBlob(async (pngBlob) => {
+          try {
+            await navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': pngBlob })
+            ]);
+            setLog('In Zwischenablage kopiert! [Strg + V]');
+            if (state.sound) playClickSound(600);
+          } catch (clipErr) {
+            setLog('Fehler: Zwischenablage gesperrt.');
+          }
+        }, 'image/png');
+      };
+
+      img.onerror = () => {
+        setLog('Fehler beim Rendern.');
+      };
+
+      img.src = blobURL;
+    } catch (e) {
+      setLog('Screenshot fehlgeschlagen.');
+    }
   }
 
   function playClickSound(freq) {
