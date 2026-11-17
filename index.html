@@ -729,7 +729,8 @@
     kills: {},
     history: [],
     sound: true,
-    duoTitle: 'Name & Name'
+    duoTitle: 'Name & Name',
+    soloTitle: 'Name'
   };
 
   DINOS.forEach(d => state.kills[d.id] = 0);
@@ -742,11 +743,23 @@
   }
 
   function setGameMode(mode) {
+    // Alten Namen im State zwischenspeichern bevor wir wechseln
+    const titleEl = document.getElementById('duo-title');
+    if (state.mode === 'duo') {
+      state.duoTitle = titleEl.textContent.trim() || 'Name & Name';
+    } else {
+      state.soloTitle = titleEl.textContent.trim() || 'Name';
+    }
+
     state.mode = mode;
     document.getElementById('btn-solo').classList.toggle('active', mode === 'solo');
     document.getElementById('btn-duo').classList.toggle('active', mode === 'duo');
     document.getElementById('mode-label').textContent = `WIDGET-MODUS (${mode.toUpperCase()})`;
     document.getElementById('total-label').textContent = mode === 'solo' ? 'SOLO KILLS' : 'GEMEINSAME KILLS';
+    
+    // Titel entsprechend des gewählten Modus einsetzen
+    titleEl.textContent = mode === 'solo' ? state.soloTitle : state.duoTitle;
+
     setLog(`Modus gewechselt: ${mode.toUpperCase()}`);
   }
 
@@ -766,9 +779,15 @@
 
     titleEl.addEventListener('blur', () => {
       const cleanName = titleEl.textContent.trim().replace(/\s+/g, ' ');
-      state.duoTitle = cleanName || 'Name & Name';
-      titleEl.textContent = state.duoTitle;
-      setLog(`Namen gespeichert: ${state.duoTitle}`);
+      if (state.mode === 'solo') {
+        state.soloTitle = cleanName || 'Name';
+        titleEl.textContent = state.soloTitle;
+        setLog(`Solo-Name gespeichert: ${state.soloTitle}`);
+      } else {
+        state.duoTitle = cleanName || 'Name & Name';
+        titleEl.textContent = state.duoTitle;
+        setLog(`Duo-Namen gespeichert: ${state.duoTitle}`);
+      }
     });
   }
 
@@ -869,8 +888,9 @@
     document.getElementById('count-klein').textContent = klein;
 
     const titleEl = document.getElementById('duo-title');
-    if (document.activeElement !== titleEl && titleEl.textContent !== state.duoTitle) {
-      titleEl.textContent = state.duoTitle;
+    const activeCurrentTitle = state.mode === 'solo' ? state.soloTitle : state.duoTitle;
+    if (document.activeElement !== titleEl && titleEl.textContent !== activeCurrentTitle) {
+      titleEl.textContent = activeCurrentTitle;
     }
 
     const soundBtn = document.getElementById('sound-btn');
@@ -886,7 +906,7 @@
     updateUI();
   }
 
-  // Erstellt die saubere Dino-Auflistung für Discord mit Solo/Duo und Spieler-Dino (auch im Duo aktiv)
+  // Erstellt die saubere Dino-Auflistung für Discord mit Solo/Duo und Spieler-Dino
   function copyDinoList() {
     let total = document.getElementById('total-kills').textContent;
     let activeDinosText = '';
@@ -902,9 +922,10 @@
       activeDinosText = '• Noch keine Kills verzeichnet\n';
     }
 
+    let currentName = document.getElementById('duo-title').textContent.trim();
     let modeTitle = state.mode === 'solo' 
-      ? `Solo [${state.playerDino}]` 
-      : `Duo [${state.duoTitle}] — Gespielt als: ${state.playerDino}`;
+      ? `Solo [${currentName}] — Gespielt als: ${state.playerDino}` 
+      : `Duo [${currentName}] — Gespielt als: ${state.playerDino}`;
       
     let headerLabel = state.mode === 'solo' ? 'Solo Kills' : 'Gemeinsame Kills';
 
