@@ -26,7 +26,7 @@
 
     body {
       margin: 0;
-      padding: 95px 20px 30px 20px;
+      padding: 40px 20px 30px 20px;
       background-color: #0c0e0d;
       color: var(--text-main);
       font-family: 'Inter', sans-serif;
@@ -40,44 +40,6 @@
       position: relative;
       width: 100%;
       max-width: 560px;
-    }
-
-    /* Neuer "The Isle - Kill Tracker" Schriftzug oben mittig am Rahmen */
-    .tracker-header-badge {
-      position: absolute;
-      top: -44px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(145deg, #2b231a 0%, #17110c 100%);
-      border: 2px solid #5c4938;
-      padding: 8px 22px;
-      border-radius: 12px;
-      z-index: 25;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.85), inset 0 1px 3px rgba(255, 255, 255, 0.15);
-      white-space: nowrap;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .badge-sub {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9.5px;
-      font-weight: 800;
-      letter-spacing: 2.5px;
-      color: #d4a373;
-      text-transform: uppercase;
-    }
-
-    .badge-main {
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
-      font-size: 16px;
-      letter-spacing: 1.2px;
-      color: #f4f1ea;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.9);
     }
 
     /* Knochen- / Fossil-Rahmen */
@@ -562,12 +524,6 @@
 </svg>
 
 <div class="fossil-wrapper">
-  <!-- Neuer "The Isle - Kill Tracker" Schriftzug oben -->
-  <div class="tracker-header-badge">
-    <span class="badge-sub">The Isle</span>
-    <span class="badge-main">Kill Tracker</span>
-  </div>
-
   <div class="bone-frame">
     <div class="frame-pattern-layer">
       <div class="frame-strip strip-top">
