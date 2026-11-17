@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Isle - Rex Duo Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
-  <!-- html2canvas Bibliothek für den Screenshot-Button -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --bg-dark: rgba(22, 17, 13, 0.94);
@@ -37,7 +35,6 @@
       position: relative;
       width: 100%;
       max-width: 560px;
-      background: transparent; /* Transparent für perfekten Screenshot ohne Desktop-Hintergrund */
     }
 
     /* T-Rex Schädel oben mittig am Rahmen */
@@ -435,8 +432,6 @@
     }
     .circle-btn:hover { background: linear-gradient(145deg, #423528 0%, #2b2018 100%); color: var(--text-main); border-color: #d4a373; }
     .circle-btn.sound-active { color: #f4b41a; border-color: rgba(244, 180, 26, 0.45); box-shadow: 0 0 8px rgba(244, 180, 26, 0.2); }
-    .circle-btn.camera-btn { color: #48cae4; border-color: rgba(72, 202, 228, 0.35); }
-    .circle-btn.camera-btn:hover { background: rgba(72, 202, 228, 0.15); border-color: #48cae4; color: #90e0ef; }
     .circle-btn.reset-btn { color: #e05a54; border-color: rgba(224, 90, 84, 0.35); }
     .circle-btn.reset-btn:hover { background: rgba(224, 90, 84, 0.15); }
   </style>
@@ -462,8 +457,8 @@
   </symbol>
 </svg>
 
-<div class="fossil-wrapper" id="capture-area">
-  <!-- T-Rex Schädel oben mittig (jetzt direkt im Screenshot-Bereich enthalten) -->
+<div class="fossil-wrapper">
+  <!-- T-Rex Schädel oben mittig -->
   <svg class="rex-skull-peeker" viewBox="0 0 260 230" xmlns="http://www.w3.org/2000/svg">
     <path d="M58,14 C82,6 135,18 175,26 C214,34 242,46 248,68 C252,82 246,98 238,104 L232,126 L224,106 L216,130 L208,108 L198,132 L190,108 L180,126 L172,106 L162,120 L154,104 L144,116 L136,102 L122,110 L144,148 C156,168 172,182 188,184 L194,162 L202,184 L208,164 L214,186 L218,176 C222,196 208,218 182,222 C152,226 112,202 76,168 C46,140 24,116 14,98 C8,88 14,76 26,72 C24,52 38,22 58,14 Z" fill="#181410"/>
     <path d="M62,20 C84,12 134,24 172,32 C208,40 234,50 240,68 C244,80 238,92 232,96 C210,88 182,94 150,98 C126,102 104,98 84,84 L62,98 L34,82 C30,60 42,28 62,20 Z" fill="#d9cab0"/>
@@ -594,12 +589,6 @@
       <div class="footer-bar">
         <span class="log-text" id="status-log">Bereit für die Jagd...</span>
         <div class="footer-actions">
-          <button class="circle-btn camera-btn" onclick="takeScreenshot()" title="Screenshot vom Widget erstellen">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-              <circle cx="12" cy="13" r="4"></circle>
-            </svg>
-          </button>
           <button class="circle-btn" onclick="undoLast()" title="Rückgängig [Z]">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
@@ -793,24 +782,6 @@
   function toggleSound() {
     state.sound = !state.sound;
     updateUI();
-  }
-
-  function takeScreenshot() {
-    setLog('Erstelle Screenshot...');
-    const element = document.getElementById('capture-area');
-    
-    html2canvas(element, {
-      backgroundColor: null, // Transparenter Hintergrund außerhalb des Rahmens
-      scale: 2 // Hohe Auflösung für scharfe Bilder
-    }).then(canvas => {
-      const link = document.createElement('a');
-      link.download = `The-Isle-KillTracker-${state.duoTitle.replace(/\s+/g, '_')}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      setLog('Screenshot gespeichert!');
-    }).catch(err => {
-      setLog('Fehler beim Screenshot.');
-    });
   }
 
   function playClickSound(freq) {
