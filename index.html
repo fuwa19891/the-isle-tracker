@@ -886,7 +886,7 @@
     updateUI();
   }
 
-  // Erstellt die saubere Dino-Auflistung für Discord mit Solo/Duo und Spieler-Dino
+  // Erstellt die saubere Dino-Auflistung für Discord mit Solo/Duo und Spieler-Dino (auch im Duo aktiv)
   function copyDinoList() {
     let total = document.getElementById('total-kills').textContent;
     let activeDinosText = '';
@@ -902,7 +902,10 @@
       activeDinosText = '• Noch keine Kills verzeichnet\n';
     }
 
-    let modeTitle = state.mode === 'solo' ? `Solo [${state.playerDino}]` : `Duo [${state.duoTitle}]`;
+    let modeTitle = state.mode === 'solo' 
+      ? `Solo [${state.playerDino}]` 
+      : `Duo [${state.duoTitle}] — Gespielt als: ${state.playerDino}`;
+      
     let headerLabel = state.mode === 'solo' ? 'Solo Kills' : 'Gemeinsame Kills';
 
     let discordOutput = `:t_rex: **The Isle Kill-Tracker (${modeTitle})** :t_rex:\n\n${headerLabel}: **${total}**\n----------------------------\n${activeDinosText}`;
