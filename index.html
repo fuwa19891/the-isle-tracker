@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Isle - Rex Duo Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
-  <!-- html2canvas wird hier wieder sauber per CDN eingebunden, aber mit sicherem App-Mode-Handling -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --bg-dark: rgba(22, 17, 13, 0.94);
@@ -37,7 +35,6 @@
       position: relative;
       width: 100%;
       max-width: 560px;
-      background: transparent;
     }
 
     /* T-Rex Schädel oben mittig am Rahmen */
@@ -462,7 +459,7 @@
   </symbol>
 </svg>
 
-<div class="fossil-wrapper" id="capture-area">
+<div class="fossil-wrapper">
   <!-- T-Rex Schädel oben mittig -->
   <svg class="rex-skull-peeker" viewBox="0 0 260 230" xmlns="http://www.w3.org/2000/svg">
     <path d="M58,14 C82,6 135,18 175,26 C214,34 242,46 248,68 C252,82 246,98 238,104 L232,126 L224,106 L216,130 L208,108 L198,132 L190,108 L180,126 L172,106 L162,120 L154,104 L144,116 L136,102 L122,110 L144,148 C156,168 172,182 188,184 L194,162 L202,184 L208,164 L214,186 L218,176 C222,196 208,218 182,222 C152,226 112,202 76,168 C46,140 24,116 14,98 C8,88 14,76 26,72 C24,52 38,22 58,14 Z" fill="#181410"/>
@@ -594,7 +591,7 @@
       <div class="footer-bar">
         <span class="log-text" id="status-log">Bereit für die Jagd...</span>
         <div class="footer-actions">
-          <button class="circle-btn camera-btn" onclick="takeScreenshotToClipboard()" title="Screenshot als Bild in Zwischenablage">
+          <button class="circle-btn camera-btn" onclick="copyDinoList()" title="Dino-Kill-Liste für Discord kopieren">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
               <circle cx="12" cy="13" r="4"></circle>
@@ -627,19 +624,19 @@
 
 <script>
   const DINOS = [
-    { id: 'rex',    name: 'Rex',       tier: 'apex',   color: '#e56b6f' },
-    { id: 'trike',  name: 'Trike',     tier: 'apex',   color: '#e6b83a' },
-    { id: 'stego',  name: 'Stego',     tier: 'apex',   color: '#52b788' },
-    { id: 'deino',  name: 'Deino',     tier: 'apex',   color: '#4ea8de' },
-    { id: 'diablo', name: 'Diablo',    tier: 'mittel', color: '#8ac926' },
-    { id: 'carno',  name: 'Carno',     tier: 'mittel', color: '#e07a38' },
-    { id: 'cera',   name: 'Cera',      tier: 'mittel', color: '#e56b6f' },
-    { id: 'allo',   name: 'Allo',      tier: 'mittel', color: '#d4a373' },
-    { id: 'maia',   name: 'Maia',      tier: 'mittel', color: '#3a86ff' },
-    { id: 'tenonto',name: 'Tenonto',   tier: 'klein',  color: '#48cae4' },
-    { id: 'omni',   name: 'Omni',      tier: 'klein',  color: '#9d4edd' },
-    { id: 'dilo',   name: 'Dilo/Herr', tier: 'klein',  color: '#aacc00' },
-    { id: 'juvi',   name: 'Juvi/Klein',tier: 'klein',  color: '#9d4edd' }
+    { id: 'rex',    name: 'Rex',       tier: 'apex',   color: '#e56b6f', emoji: '🦖' },
+    { id: 'trike',  name: 'Trike',     tier: 'apex',   color: '#e6b83a', emoji: '🦕' },
+    { id: 'stego',  name: 'Stego',     tier: 'apex',   color: '#52b788', emoji: '🛡️' },
+    { id: 'deino',  name: 'Deino',     tier: 'apex',   color: '#4ea8de', emoji: '🐊' },
+    { id: 'diablo', name: 'Diablo',    tier: 'mittel', color: '#8ac926', emoji: '🐂' },
+    { id: 'carno',  name: 'Carno',     tier: 'mittel', color: '#e07a38', emoji: '🍖' },
+    { id: 'cera',   name: 'Cera',      tier: 'mittel', color: '#e56b6f', emoji: '🗡️' },
+    { id: 'allo',   name: 'Allo',      tier: 'mittel', color: '#d4a373', emoji: '🐅' },
+    { id: 'maia',   name: 'Maia',      tier: 'mittel', color: '#3a86ff', emoji: '🦌' },
+    { id: 'tenonto',name: 'Tenonto',   tier: 'klein',  color: '#48cae4', emoji: '🦎' },
+    { id: 'omni',   name: 'Omni',      tier: 'klein',  color: '#9d4edd', emoji: '🏃' },
+    { id: 'dilo',   name: 'Dilo/Herr', tier: 'klein',  color: '#aacc00', emoji: '🦇' },
+    { id: 'juvi',   name: 'Juvi/Klein',tier: 'klein',  color: '#9d4edd', emoji: '🐣' }
   ];
 
   const TIER_DOT_COLORS = {
@@ -756,7 +753,6 @@
       total += count;
       if (d.tier === 'apex') apex += count;
       if (d.tier === 'mittel') mittel += count;
-      if (d.tier ===20) {}; // placeholder
       if (d.tier === 'klein') klein += count;
 
       const btn = document.getElementById(`btn-${d.id}`);
@@ -796,35 +792,30 @@
     updateUI();
   }
 
-  // Echter Screenshot-Befehl per html2canvas, der direkt als Bild in die Zwischenablage kopiert
-  async function takeScreenshotToClipboard() {
-    setLog('Erstelle Bild-Screenshot...');
-    const element = document.getElementById('capture-area');
+  // Erstellt die saubere Dino-Auflistung für Discord und kopiert sie in die Zwischenablage
+  async function copyDinoList() {
+    let total = document.getElementById('total-kills').textContent;
+    let activeDinosText = '';
+
+    DINOS.forEach(d => {
+      let count = state.kills[d.id] || 0;
+      if (count > 0) {
+        activeDinosText += `• ${d.emoji} ${d.name}: ${count}\n`;
+      }
+    });
+
+    if (activeDinosText === '') {
+      activeDinosText = '• Noch keine Kills verzeichnet\n';
+    }
+
+    let discordOutput = `🦖 **The Isle Kill-Tracker** [${state.duoTitle}] 🦖\n\nGemeinsame Kills: **${total}**\n----------------------------\n${activeDinosText}`;
 
     try {
-      const canvas = await html2canvas(element, {
-        backgroundColor: null,
-        scale: 2, // gestochen scharf
-        useCORS: true
-      });
-
-      canvas.toBlob(async (blob) => {
-        try {
-          await navigator.clipboard.write([
-            new ClipboardItem({ 'image/png': blob })
-          ]);
-          setLog('Screenshot als Bild kopiert! [Strg + V in Discord]');
-          if (state.sound) playClickSound(650);
-        } catch (clipErr) {
-          setLog('Zwischenablage blockiert – lade stattdessen herunter...');
-          const link = document.createElement('a');
-          link.download = `The-Isle-Tracker.png`;
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-        }
-      }, 'image/png');
-    } catch (err) {
-      setLog('Fehler beim Screenshot.');
+      await navigator.clipboard.writeText(discordOutput);
+      setLog('Dino-Liste in Zwischenablage kopiert! [Strg+V]');
+      if (state.sound) playClickSound(600);
+    } catch (e) {
+      setLog('Fehler beim Kopieren.');
     }
   }
 
