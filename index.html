@@ -624,19 +624,19 @@
 
 <script>
   const DINOS = [
-    { id: 'rex',    name: 'Rex',       tier: 'apex',   color: '#e56b6f', emoji: '🦖' },
-    { id: 'trike',  name: 'Trike',     tier: 'apex',   color: '#e6b83a', emoji: '🦕' },
-    { id: 'stego',  name: 'Stego',     tier: 'apex',   color: '#52b788', emoji: '🛡️' },
-    { id: 'deino',  name: 'Deino',     tier: 'apex',   color: '#4ea8de', emoji: '🐊' },
-    { id: 'diablo', name: 'Diablo',    tier: 'mittel', color: '#8ac926', emoji: '🐂' },
-    { id: 'carno',  name: 'Carno',     tier: 'mittel', color: '#e07a38', emoji: '🍖' },
-    { id: 'cera',   name: 'Cera',      tier: 'mittel', color: '#e56b6f', emoji: '🗡️' },
-    { id: 'allo',   name: 'Allo',      tier: 'mittel', color: '#d4a373', emoji: '🐅' },
-    { id: 'maia',   name: 'Maia',      tier: 'mittel', color: '#3a86ff', emoji: '🦌' },
-    { id: 'tenonto',name: 'Tenonto',   tier: 'klein',  color: '#48cae4', emoji: '🦎' },
-    { id: 'omni',   name: 'Omni',      tier: 'klein',  color: '#9d4edd', emoji: '🏃' },
-    { id: 'dilo',   name: 'Dilo/Herr', tier: 'klein',  color: '#aacc00', emoji: '🦇' },
-    { id: 'juvi',   name: 'Juvi/Klein',tier: 'klein',  color: '#9d4edd', emoji: '🐣' }
+    { id: 'rex',    name: 'Rex',       tier: 'apex',   color: '#e56b6f' },
+    { id: 'trike',  name: 'Trike',     tier: 'apex',   color: '#e6b83a' },
+    { id: 'stego',  name: 'Stego',     tier: 'apex',   color: '#52b788' },
+    { id: 'deino',  name: 'Deino',     tier: 'apex',   color: '#4ea8de' },
+    { id: 'diablo', name: 'Diablo',    tier: 'mittel', color: '#8ac926' },
+    { id: 'carno',  name: 'Carno',     tier: 'mittel', color: '#e07a38' },
+    { id: 'cera',   name: 'Cera',      tier: 'mittel', color: '#e56b6f' },
+    { id: 'allo',   name: 'Allo',      tier: 'mittel', color: '#d4a373' },
+    { id: 'maia',   name: 'Maia',      tier: 'mittel', color: '#3a86ff' },
+    { id: 'tenonto',name: 'Tenonto',   tier: 'klein',  color: '#48cae4' },
+    { id: 'omni',   name: 'Omni',      tier: 'klein',  color: '#9d4edd' },
+    { id: 'dilo',   name: 'Dilo/Herr', tier: 'klein',  color: '#aacc00' },
+    { id: 'juvi',   name: 'Juvi/Klein',tier: 'klein',  color: '#9d4edd' }
   ];
 
   const TIER_DOT_COLORS = {
@@ -792,7 +792,7 @@
     updateUI();
   }
 
-  // Narrensichere Methode für die Zwischenablage ohne Browser-Blockaden (Dino-Liste)
+  // Erstellt die saubere Dino-Auflistung für Discord ohne Icons vor den Namen
   function copyDinoList() {
     let total = document.getElementById('total-kills').textContent;
     let activeDinosText = '';
@@ -800,7 +800,7 @@
     DINOS.forEach(d => {
       let count = state.kills[d.id] || 0;
       if (count > 0) {
-        activeDinosText += `• ${d.emoji} ${d.name}: ${count}\n`;
+        activeDinosText += `• ${d.name}: ${count}\n`;
       }
     });
 
@@ -808,7 +808,7 @@
       activeDinosText = '• Noch keine Kills verzeichnet\n';
     }
 
-    let discordOutput = `🦖 **The Isle Kill-Tracker** [${state.duoTitle}] 🦖\n\nGemeinsame Kills: **${total}**\n----------------------------\n${activeDinosText}`;
+    let discordOutput = `:t_rex: **The Isle Kill-Tracker** [${state.duoTitle}] :t_rex:\n\nGemeinsame Kills: **${total}**\n----------------------------\n${activeDinosText}`;
 
     const textarea = document.createElement('textarea');
     textarea.value = discordOutput;
