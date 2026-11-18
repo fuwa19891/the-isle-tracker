@@ -42,6 +42,21 @@
       max-width: 560px;
     }
 
+    /* Brachialer Screen-Shake für das Meilenstein-Event */
+    @keyframes epicShake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      15% { transform: translate(-8px, 6px) rotate(-0.8deg); }
+      30% { transform: translate(8px, -6px) rotate(0.8deg); }
+      45% { transform: translate(-6px, -4px) rotate(-0.4deg); }
+      60% { transform: translate(6px, 4px) rotate(0.4deg); }
+      80% { transform: translate(-3px, 2px) rotate(-0.2deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    .bone-frame.epic-shake {
+      animation: epicShake 0.5s ease-in-out;
+    }
+
     /* Knochen- / Fossil-Rahmen */
     .bone-frame {
       position: relative;
@@ -53,6 +68,97 @@
         inset 0 2px 4px rgba(255, 250, 240, 0.65),
         inset 0 -3px 7px rgba(45, 38, 28, 0.8),
         0 18px 40px rgba(0, 0, 0, 0.9);
+      overflow: hidden;
+    }
+
+    /* RISS- / SCHLITZER-EFFEKT (Standard bei jedem Kill) */
+    .slash-effect-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 99;
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    .slash-effect-overlay.active {
+      animation: overlayFade 0.4s ease-out forwards;
+    }
+
+    @keyframes overlayFade {
+      0% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .slash-claw {
+      position: absolute;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(220, 20, 20, 0.95) 30%, rgba(70, 0, 0, 0.98) 100%);
+      box-shadow: 0 0 14px rgba(255, 0, 0, 0.8), inset 0 0 5px rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      transform: rotate(32deg);
+      transform-origin: top left;
+      width: 0px;
+    }
+
+    .claw-1 { height: 6px; top: -40px; left: -20%; }
+    .claw-2 { height: 10px; top: 110px; left: -20%; }
+    .claw-3 { height: 6px; top: 260px; left: -20%; }
+
+    .slash-effect-overlay.active .claw-1 { animation: tearOpen 0.35s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
+    .slash-effect-overlay.active .claw-2 { animation: tearOpen 0.38s cubic-bezier(0.1, 0.9, 0.2, 1) 0.04s forwards; }
+    .slash-effect-overlay.active .claw-3 { animation: tearOpen 0.35s cubic-bezier(0.1, 0.9, 0.2, 1) 0.08s forwards; }
+
+    @keyframes tearOpen {
+      0% { width: 0px; opacity: 1; }
+      70% { opacity: 1; }
+      100% { width: 1600px; opacity: 0.9; }
+    }
+
+    /* ALTERNATIVE 3: EPISCHES MEILENSTEIN-EVENT (5. & 10. Kill) */
+    .epic-milestone-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      background: radial-gradient(circle at center, rgba(220, 20, 20, 0.45) 0%, rgba(40, 0, 0, 0.9) 100%);
+      overflow: hidden;
+    }
+
+    .epic-milestone-overlay.active {
+      animation: epicFlash 0.7s ease-out forwards;
+    }
+
+    @keyframes epicFlash {
+      0% { opacity: 0; }
+      25% { opacity: 1; }
+      70% { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+
+    /* Brachiale, extra dicke Blutklauen für den Meilenstein */
+    .epic-claw {
+      position: absolute;
+      background: linear-gradient(135deg, #ffffff 0%, #ff0000 30%, #600000 100%);
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.95), inset 0 0 10px rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      transform: rotate(32deg);
+      transform-origin: top left;
+      width: 0px;
+    }
+
+    .epic-claw-1 { height: 12px; top: -30px; left: -15%; }
+    .epic-claw-2 { height: 20px; top: 130px; left: -15%; }
+    .epic-claw-3 { height: 12px; top: 290px; left: -15%; }
+
+    .epic-milestone-overlay.active .epic-claw-1 { animation: epicRip 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
+    .epic-milestone-overlay.active .epic-claw-2 { animation: epicRip 0.55s cubic-bezier(0.1, 0.9, 0.2, 1) 0.04s forwards; }
+    .epic-milestone-overlay.active .epic-claw-3 { animation: epicRip 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) 0.08s forwards; }
+
+    @keyframes epicRip {
+      0% { width: 0px; opacity: 1; }
+      100% { width: 1900px; opacity: 0.95; }
     }
 
     /* Eingestanzte Skelett-Muster am Rahmen */
@@ -404,7 +510,7 @@
       z-index: 3;
     }
 
-    /* Fossil-Inklusion im Bernstein */
+    /* Standard Fossil-Größe für die meisten Dinos */
     .fossil-img {
       width: 78%;
       height: 65%;
@@ -413,10 +519,75 @@
       opacity: 0.95;
     }
 
-    .fossil-img-deino {
-      width: 72% !important;
-      height: 60% !important;
-      filter: brightness(0.05) contrast(2.2) drop-shadow(0 1px 1px rgba(255, 204, 51, 0.6)) !important;
+    /* Cera verkleinert */
+    .fossil-img-cera {
+      width: 58%;
+      height: 50%;
+      object-fit: contain;
+      filter: brightness(0.02) contrast(3.5) drop-shadow(0 1px 1px rgba(255, 204, 51, 0.6));
+      opacity: 0.98;
+    }
+
+    .fossil-img-allo {
+      width: 78%;
+      height: 65%;
+      object-fit: contain;
+      filter: brightness(0.02) contrast(3.5) drop-shadow(0 1px 1px rgba(255, 204, 51, 0.6));
+      opacity: 0.98;
+    }
+
+    /* Teno */
+    .fossil-img-teno {
+      width: 78%;
+      height: 65%;
+      object-fit: contain;
+      filter: invert(1) brightness(0.05) contrast(3) drop-shadow(0 1px 1px rgba(255, 204, 51, 0.6));
+      opacity: 0.98;
+    }
+
+    /* Pachy */
+    .fossil-img-pachy {
+      width: 78%;
+      height: 65%;
+      object-fit: contain;
+      filter: brightness(0.02) contrast(3.5) drop-shadow(0 1px 1px rgba(255, 204, 51, 0.6));
+      opacity: 0.98;
+    }
+
+    /* Omni */
+    .fossil-img-omni {
+      width: 78%;
+      height: 65%;
+      object-fit: contain;
+      filter: brightness(0.02) contrast(3.5) drop-shadow(0 1px 1px rgba(255, 204, 51, 0.6));
+      opacity: 0.98;
+    }
+
+    /* Dilo */
+    .fossil-img-dilo {
+      width: 78%;
+      height: 65%;
+      object-fit: contain;
+      filter: brightness(0.02) contrast(3.5) drop-shadow(0 1px 1px rgba(255, 204, 51, 0.6));
+      opacity: 0.98;
+    }
+
+    /* Herrera */
+    .fossil-img-herrera {
+      width: 55%;
+      height: 48%;
+      object-fit: contain;
+      filter: brightness(0.02) contrast(3.5) drop-shadow(0 1px 1px rgba(255, 204, 51, 0.6));
+      opacity: 0.98;
+    }
+
+    /* Maia */
+    .fossil-img-maia {
+      width: 78%;
+      height: 65%;
+      object-fit: contain;
+      filter: brightness(0.02) contrast(4) drop-shadow(0 1px 1px rgba(255, 204, 51, 0.6));
+      opacity: 0.98;
     }
 
     .dino-btn:hover .amber-stone-img {
@@ -453,6 +624,14 @@
 
     .dino-btn.has-kills .kill-badge { display: block; }
     
+    .dino-name { 
+      font-size: 11.5px; 
+      font-weight: 800; 
+      letter-spacing: 0.6px;
+      font-family: 'JetBrains Mono', monospace;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.99), 0 0 5px rgba(0,0,0,0.95);
+    }
+
     .amber-tag {
       position: absolute;
       top: -22px;
@@ -475,13 +654,78 @@
     .footer-bar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
       padding-top: 12px;
       border-top: 1px solid var(--border-subtle);
+      gap: 12px;
     }
 
-    .log-text { font-size: 12px; font-style: italic; color: var(--text-muted); }
-    .footer-actions { display: flex; gap: 8px; }
+    /* Killfeed-Container */
+    .killfeed-container {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      max-width: 310px;
+      overflow: hidden;
+    }
+
+    @keyframes dropIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .log-line {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: all 0.2s ease;
+    }
+
+    .log-line.feed-0 {
+      font-weight: 800;
+      color: #f4f1ea;
+      font-size: 12px;
+      text-shadow: 0 0 8px rgba(255, 204, 51, 0.4);
+      animation: dropIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    /* Spezial-Look für Meilenstein-Meldung im Feed (Brennend / Glühend) */
+    .log-line.feed-0.milestone-log {
+      color: #ff3333;
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 50, 50, 0.5);
+      font-weight: 900;
+    }
+
+    .log-line.feed-1 {
+      font-weight: 600;
+      color: #b3a896;
+      opacity: 0.85;
+      font-size: 11px;
+    }
+
+    .log-line.feed-2 {
+      font-weight: 500;
+      color: #9c9183;
+      opacity: 0.6;
+      font-size: 10.5px;
+    }
+
+    .log-line.feed-3 {
+      font-weight: 500;
+      color: #9c9183;
+      opacity: 0.35;
+      font-size: 10px;
+    }
+
+    .footer-actions { display: flex; gap: 8px; flex-shrink: 0; }
 
     .circle-btn {
       width: 32px;
@@ -524,7 +768,21 @@
 </svg>
 
 <div class="fossil-wrapper">
-  <div class="bone-frame">
+  <div class="bone-frame" id="bone-frame">
+    <!-- Standard Schlitzer-Effekt -->
+    <div class="slash-effect-overlay" id="slash-overlay">
+      <div class="slash-claw claw-1"></div>
+      <div class="slash-claw claw-2"></div>
+      <div class="slash-claw claw-3"></div>
+    </div>
+
+    <!-- Alternative 3: Epischer Meilenstein-Zerreiß-Effekt -->
+    <div class="epic-milestone-overlay" id="epic-overlay">
+      <div class="epic-claw epic-claw-1"></div>
+      <div class="epic-claw epic-claw-2"></div>
+      <div class="epic-claw epic-claw-3"></div>
+    </div>
+
     <div class="frame-pattern-layer">
       <div class="frame-strip strip-top">
         <svg class="motif-rex-top"><use href="#rex-skeleton"/></svg>
@@ -631,7 +889,9 @@
       <div class="dino-grid" id="dino-grid"></div>
 
       <div class="footer-bar">
-        <span class="log-text" id="status-log">Bereit für die Jagd...</span>
+        <div class="killfeed-container" id="killfeed-container">
+          <div class="log-line feed-0">Bereit für die Jagd...</div>
+        </div>
         <div class="footer-actions">
           <button class="circle-btn copy-btn" onclick="copyDinoList()" title="Kill-Liste für Discord kopieren">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -669,19 +929,21 @@
 
 <script>
   const DINOS = [
-    { id: 'rex',    name: 'Rex',       tier: 'apex',   color: '#ff8a8a' },
-    { id: 'trike',  name: 'Trike',     tier: 'apex',   color: '#ffd25a' },
-    { id: 'stego',  name: 'Stego',     tier: 'apex',   color: '#73e2a7' },
-    { id: 'deino',  name: 'Deino',     tier: 'apex',   color: '#70c1ff' },
-    { id: 'diablo', name: 'Diablo',    tier: 'mittel', color: '#b5ff48' },
-    { id: 'carno',  name: 'Carno',     tier: 'mittel', color: '#ffa05c' },
-    { id: 'cera',   name: 'Cera',      tier: 'mittel', color: '#ff8a8a' },
-    { id: 'allo',   name: 'Allo',      tier: 'mittel', color: '#ffcc80' },
-    { id: 'maia',   name: 'Maia',      tier: 'mittel', color: '#6eb5ff' },
-    { id: 'tenonto',name: 'Tenonto',   tier: 'klein',  color: '#84e6ff' },
-    { id: 'omni',   name: 'Omni',      tier: 'klein',  color: '#c784ff' },
-    { id: 'dilo',   name: 'Dilo/Herr', tier: 'klein',  color: '#ccff48' },
-    { id: 'juvi',   name: 'Juvi/Egg',  tier: 'klein',  color: '#c784ff' }
+    { id: 'rex',     name: 'Rex',       tier: 'apex',   color: '#ff8a8a' },
+    { id: 'trike',   name: 'Trike',     tier: 'apex',   color: '#ffd25a' },
+    { id: 'stego',   name: 'Stego',     tier: 'apex',   color: '#73e2a7' },
+    { id: 'deino',   name: 'Deino',     tier: 'apex',   color: '#70c1ff' },
+    { id: 'diablo',  name: 'Diablo',    tier: 'mittel', color: '#b5ff48' },
+    { id: 'carno',   name: 'Carno',     tier: 'mittel', color: '#ffa05c' },
+    { id: 'cera',    name: 'Cera',      tier: 'mittel', color: '#ff8a8a' },
+    { id: 'allo',    name: 'Allo',      tier: 'mittel', color: '#ffcc80' },
+    { id: 'maia',    name: 'Maia',      tier: 'mittel', color: '#6eb5ff' },
+    { id: 'tenonto', name: 'Tenonto',   tier: 'klein',  color: '#84e6ff' },
+    { id: 'pachy',   name: 'Pachy',     tier: 'klein',  color: '#ffd25a' },
+    { id: 'omni',    name: 'Omni',      tier: 'klein',  color: '#c784ff' },
+    { id: 'dilo',    name: 'Dilo',      tier: 'klein',  color: '#ccff48' },
+    { id: 'herrera', name: 'Herrera',   tier: 'klein',  color: '#a8ff60' },
+    { id: 'juvi',    name: 'Juvi/Egg',  tier: 'klein',  color: '#c784ff' }
   ];
 
   const TIER_DOT_COLORS = {
@@ -697,7 +959,9 @@
     history: [],
     sound: true,
     duoTitle: 'Name & Name',
-    soloTitle: 'Name'
+    soloTitle: 'Name',
+    feedLogs: ['Bereit für die Jagd...'],
+    feedIsMilestone: [false]
   };
 
   DINOS.forEach(d => state.kills[d.id] = 0);
@@ -724,7 +988,7 @@
     document.getElementById('total-label').textContent = mode === 'solo' ? 'SOLO KILLS' : 'GEMEINSAME KILLS';
     
     titleEl.textContent = mode === 'solo' ? state.soloTitle : state.duoTitle;
-    setLog(`Modus gewechselt: ${mode.toUpperCase()}`);
+    pushLog(`Modus gewechselt: ${mode.toUpperCase()}`, false);
   }
 
   function setupTitleEditor() {
@@ -741,11 +1005,11 @@
       if (state.mode === 'solo') {
         state.soloTitle = cleanName || 'Name';
         titleEl.textContent = state.soloTitle;
-        setLog(`Solo-Name gespeichert: ${state.soloTitle}`);
+        pushLog(`Solo-Name: ${state.soloTitle}`, false);
       } else {
         state.duoTitle = cleanName || 'Name & Name';
         titleEl.textContent = state.duoTitle;
-        setLog(`Duo-Namen gespeichert: ${state.duoTitle}`);
+        pushLog(`Duo-Namen: ${state.duoTitle}`, false);
       }
     });
   }
@@ -772,12 +1036,30 @@
       let fossilHtml = '';
       if (dino.id === 'rex') {
         fossilHtml = `<img src="t-rex_skull.png" class="fossil-img" alt="T-Rex Fossil">`;
-      } else if (dino.id === 'trike') {
-        fossilHtml = `<img src="trike_skull.png" class="fossil-img" alt="Trike Fossil">`;
+      } else if (dino.id === 'trike' || dino.id === 'diablo') {
+        fossilHtml = `<img src="trike_skull.png" class="fossil-img" alt="${dino.name} Fossil">`;
       } else if (dino.id === 'stego') {
         fossilHtml = `<img src="stego_skull.png" class="fossil-img" alt="Stego Fossil">`;
       } else if (dino.id === 'deino') {
-        fossilHtml = `<img src="deino_skull.png" class="fossil-img fossil-img-deino" alt="Deino Fossil">`;
+        fossilHtml = `<img src="deino_skull.png" class="fossil-img" alt="Deino Fossil">`;
+      } else if (dino.id === 'carno') {
+        fossilHtml = `<img src="carno_skull.png" class="fossil-img" alt="Carno Fossil">`;
+      } else if (dino.id === 'cera') {
+        fossilHtml = `<img src="cera_skull.png" class="fossil-img-cera" alt="Cera Fossil">`;
+      } else if (dino.id === 'allo') {
+        fossilHtml = `<img src="Allo_skull.png" class="fossil-img-allo" alt="Allo Fossil">`;
+      } else if (dino.id === 'maia') {
+        fossilHtml = `<img src="maia_skull.png" class="fossil-img-maia" alt="Maia Fossil">`;
+      } else if (dino.id === 'tenonto') {
+        fossilHtml = `<img src="teno_skull.png" class="fossil-img-teno" alt="Tenonto Fossil">`;
+      } else if (dino.id === 'pachy') {
+        fossilHtml = `<img src="pachy_skull.png" class="fossil-img-pachy" alt="Pachy Fossil">`;
+      } else if (dino.id === 'omni') {
+        fossilHtml = `<img src="omni_skull.png" class="fossil-img-omni" alt="Omni Fossil">`;
+      } else if (dino.id === 'dilo') {
+        fossilHtml = `<img src="dilo_skull.png" class="fossil-img-dilo" alt="Dilo Fossil">`;
+      } else if (dino.id === 'herrera') {
+        fossilHtml = `<img src="herra_skull.png" class="fossil-img-herrera" alt="Herrera Fossil">`;
       } else {
         fossilHtml = `<span class="dino-name" style="color: ${dino.color};">${dino.name}</span>`;
       }
@@ -804,16 +1086,73 @@
     });
   }
 
+  function triggerSlashEffect() {
+    const overlay = document.getElementById('slash-overlay');
+    overlay.classList.remove('active');
+    void overlay.offsetWidth;
+    overlay.classList.add('active');
+  }
+
+  function triggerEpicMilestoneEffect() {
+    const overlay = document.getElementById('epic-overlay');
+    const frame = document.getElementById('bone-frame');
+    
+    overlay.classList.remove('active');
+    frame.classList.remove('epic-shake');
+    void overlay.offsetWidth;
+    
+    overlay.classList.add('active');
+    frame.classList.add('epic-shake');
+  }
+
+  function pushLog(msg, isMilestone = false) {
+    state.feedLogs.unshift(msg);
+    state.feedIsMilestone.unshift(isMilestone);
+    if (state.feedLogs.length > 4) {
+      state.feedLogs.pop();
+      state.feedIsMilestone.pop();
+    }
+    renderKillfeed();
+  }
+
+  function renderKillfeed() {
+    const container = document.getElementById('killfeed-container');
+    container.innerHTML = '';
+    state.feedLogs.forEach((log, index) => {
+      const div = document.createElement('div');
+      let classes = `log-line feed-${index}`;
+      if (index === 0 && state.feedIsMilestone[0]) {
+        classes += ` milestone-log`;
+      }
+      div.className = classes;
+      div.textContent = log;
+      container.appendChild(div);
+    });
+  }
+
   function addKill(dinoId, delta) {
     if (delta < 0 && (state.kills[dinoId] || 0) <= 0) return;
 
-    state.kills[dinoId] = Math.max(0, (state.kills[dinoId] || 0) + delta);
+    const oldVal = state.kills[dinoId] || 0;
+    const newVal = Math.max(0, oldVal + delta);
+    state.kills[dinoId] = newVal;
     state.history.push({ dinoId, delta });
 
     const dino = DINOS.find(d => d.id === dinoId);
-    setLog(delta > 0 ? `+1 ${dino.name} erlegt!` : `-1 ${dino.name} korrigiert`);
+    
+    if (delta > 0) {
+      if (newVal > 0 && newVal % 5 === 0) {
+        triggerEpicMilestoneEffect(); // Brachialer Screen-Shake, dicke Blutklauen & roter Flash!
+        pushLog(`🦖 MEILENSTEIN! ${newVal}x ${dino.name} erlegt!`, true);
+      } else {
+        triggerSlashEffect(); // Normaler Schlitzer
+        pushLog(`+1 ${dino.name} erlegt!`, false);
+      }
+    } else {
+      pushLog(`-1 ${dino.name} korrigiert`, false);
+    }
 
-    if (state.sound) playClickSound(delta > 0 ? 520 : 280);
+    if (state.sound) playClickSound(delta > 0 ? (newVal % 5 === 0 ? 780 : 520) : 280);
     updateUI();
   }
 
@@ -822,7 +1161,7 @@
     const last = state.history.pop();
     state.kills[last.dinoId] = Math.max(0, (state.kills[last.dinoId] || 0) - last.delta);
     const dino = DINOS.find(d => d.id === last.dinoId);
-    setLog(`Rückgängig: ${dino.name}`);
+    pushLog(`Rückgängig: ${dino.name}`, false);
     if (state.sound) playClickSound(340);
     updateUI();
   }
@@ -830,7 +1169,7 @@
   function resetTracker() {
     DINOS.forEach(d => state.kills[d.id] = 0);
     state.history = [];
-    setLog('Tracker zurückgesetzt.');
+    pushLog('Tracker zurückgesetzt.', false);
     updateUI();
   }
 
@@ -867,10 +1206,6 @@
 
     const soundBtn = document.getElementById('sound-btn');
     soundBtn.classList.toggle('sound-active', state.sound);
-  }
-
-  function setLog(msg) {
-    document.getElementById('status-log').textContent = msg;
   }
 
   function toggleSound() {
@@ -912,13 +1247,13 @@
     try {
       const successful = document.execCommand('copy');
       if (successful) {
-        setLog('Kill-Liste kopiert! [Strg+V bereit]');
+        pushLog('Kill-Liste kopiert! [Strg+V bereit]', false);
         if (state.sound) playClickSound(600);
       } else {
-        setLog('Kopieren fehlgeschlagen.');
+        pushLog('Kopieren fehlgeschlagen.', false);
       }
     } catch (err) {
-      setLog('Browser blockiert Zwischenablage.');
+      pushLog('Browser blockiert Zwischenablage.', false);
     }
 
     document.body.removeChild(textarea);
