@@ -42,21 +42,6 @@
       max-width: 560px;
     }
 
-    /* Brachialer Screen-Shake für das Meilenstein-Event */
-    @keyframes epicShake {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      15% { transform: translate(-8px, 6px) rotate(-0.8deg); }
-      30% { transform: translate(8px, -6px) rotate(0.8deg); }
-      45% { transform: translate(-6px, -4px) rotate(-0.4deg); }
-      60% { transform: translate(6px, 4px) rotate(0.4deg); }
-      80% { transform: translate(-3px, 2px) rotate(-0.2deg); }
-      100% { transform: translate(0, 0) rotate(0deg); }
-    }
-
-    .bone-frame.epic-shake {
-      animation: epicShake 0.5s ease-in-out;
-    }
-
     /* Knochen- / Fossil-Rahmen */
     .bone-frame {
       position: relative;
@@ -115,7 +100,7 @@
       100% { width: 1600px; opacity: 0.9; }
     }
 
-    /* ALTERNATIVE 3: EPISCHES MEILENSTEIN-EVENT (5. & 10. Kill) */
+    /* EPISCHES MEILENSTEIN-EVENT (5. & 10. Kill) */
     .epic-milestone-overlay {
       position: absolute;
       inset: 0;
@@ -137,7 +122,6 @@
       100% { opacity: 0; }
     }
 
-    /* Brachiale, extra dicke Blutklauen für den Meilenstein */
     .epic-claw {
       position: absolute;
       background: linear-gradient(135deg, #ffffff 0%, #ff0000 30%, #600000 100%);
@@ -207,7 +191,22 @@
         inset 0 0 25px rgba(0, 0, 0, 0.85);
     }
 
-    /* Großes T-Rex Hintergrund-Fossil (dauerhaft aktiv) */
+    /* Screen-Shake NUR für den inneren Tracker (Hintergrund-Rex bleibt absolut starr!) */
+    @keyframes epicShakeApp {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      15% { transform: translate(-6px, 4px) rotate(-0.5deg); }
+      30% { transform: translate(6px, -4px) rotate(0.5deg); }
+      45% { transform: translate(-4px, -2px) rotate(-0.3deg); }
+      60% { transform: translate(4px, 2px) rotate(0.3deg); }
+      80% { transform: translate(-2px, 1px) rotate(-0.1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    .tracker-app.epic-shake {
+      animation: epicShakeApp 0.5s ease-in-out;
+    }
+
+    /* Großes T-Rex Hintergrund-Fossil (sitzt fest und starr) */
     .bg-fossil-layer {
       position: absolute;
       inset: 0;
@@ -459,11 +458,21 @@
     .grid-title { font-weight: 700; color: #b7beb9; letter-spacing: 0.6px; }
     .grid-hint { color: var(--text-muted); font-size: 10.5px; }
 
+    /* DINO GRID (4 Spalten) */
     .dino-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
       margin-bottom: 16px;
+    }
+
+    /* Spezielle Platzierung für Juvi und Egg (sitzen direkt nebeneinander mittig unten) */
+    .dino-btn.juvi-pos {
+      grid-column: 2;
+    }
+
+    .dino-btn.egg-pos {
+      grid-column: 3;
     }
 
     /* HORIZONTALER BERNSTEIN-BUTTON */
@@ -697,7 +706,6 @@
       animation: dropIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    /* Spezial-Look für Meilenstein-Meldung im Feed (Brennend / Glühend) */
     .log-line.feed-0.milestone-log {
       color: #ff3333;
       text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 50, 50, 0.5);
@@ -776,7 +784,7 @@
       <div class="slash-claw claw-3"></div>
     </div>
 
-    <!-- Alternative 3: Epischer Meilenstein-Zerreiß-Effekt -->
+    <!-- Epischer Meilenstein-Effekt -->
     <div class="epic-milestone-overlay" id="epic-overlay">
       <div class="epic-claw epic-claw-1"></div>
       <div class="epic-claw epic-claw-2"></div>
@@ -815,8 +823,9 @@
       </div>
     </div>
 
-    <div class="tracker-app">
-      <!-- Großes T-Rex Hintergrund-Fossil (dauerhaft aktiv) -->
+    <!-- Tracker-App-Bereich -->
+    <div class="tracker-app" id="tracker-app">
+      <!-- Großes T-Rex Hintergrund-Fossil (sitzt fest und starr) -->
       <div class="bg-fossil-layer" id="bg-fossil">
         <img src="t-rex_background.png" class="bg-fossil-img" alt="T-Rex Background Fossil">
       </div>
@@ -929,21 +938,24 @@
 
 <script>
   const DINOS = [
-    { id: 'rex',     name: 'Rex',       tier: 'apex',   color: '#ff8a8a' },
-    { id: 'trike',   name: 'Trike',     tier: 'apex',   color: '#ffd25a' },
-    { id: 'stego',   name: 'Stego',     tier: 'apex',   color: '#73e2a7' },
-    { id: 'deino',   name: 'Deino',     tier: 'apex',   color: '#70c1ff' },
-    { id: 'diablo',  name: 'Diablo',    tier: 'mittel', color: '#b5ff48' },
-    { id: 'carno',   name: 'Carno',     tier: 'mittel', color: '#ffa05c' },
-    { id: 'cera',    name: 'Cera',      tier: 'mittel', color: '#ff8a8a' },
-    { id: 'allo',    name: 'Allo',      tier: 'mittel', color: '#ffcc80' },
-    { id: 'maia',    name: 'Maia',      tier: 'mittel', color: '#6eb5ff' },
-    { id: 'tenonto', name: 'Tenonto',   tier: 'klein',  color: '#84e6ff' },
-    { id: 'pachy',   name: 'Pachy',     tier: 'klein',  color: '#ffd25a' },
-    { id: 'omni',    name: 'Omni',      tier: 'klein',  color: '#c784ff' },
-    { id: 'dilo',    name: 'Dilo',      tier: 'klein',  color: '#ccff48' },
-    { id: 'herrera', name: 'Herrera',   tier: 'klein',  color: '#a8ff60' },
-    { id: 'juvi',    name: 'Juvi/Egg',  tier: 'klein',  color: '#c784ff' }
+    { id: 'rex',      name: 'Rex',        tier: 'apex',   color: '#ff8a8a' },
+    { id: 'trike',    name: 'Trike',      tier: 'apex',   color: '#ffd25a' },
+    { id: 'stego',    name: 'Stego',      tier: 'apex',   color: '#73e2a7' },
+    { id: 'deino',    name: 'Deino',      tier: 'apex',   color: '#70c1ff' },
+    { id: 'diablo',   name: 'Diablo',     tier: 'mittel', color: '#b5ff48' },
+    { id: 'carno',    name: 'Carno',      tier: 'mittel', color: '#ffa05c' },
+    { id: 'cera',     name: 'Cera',       tier: 'mittel', color: '#ff8a8a' },
+    { id: 'allo',     name: 'Allo',       tier: 'mittel', color: '#ffcc80' },
+    { id: 'maia',     name: 'Maia',       tier: 'mittel', color: '#6eb5ff' },
+    { id: 'tenonto',  name: 'Tenonto',    tier: 'klein',  color: '#84e6ff' },
+    { id: 'pachy',    name: 'Pachy',      tier: 'klein',  color: '#ffd25a' },
+    { id: 'omni',     name: 'Omni',       tier: 'klein',  color: '#c784ff' },
+    { id: 'dilo',     name: 'Dilo',       tier: 'klein',  color: '#ccff48' },
+    { id: 'herrera',  name: 'Herrera',    tier: 'klein',  color: '#a8ff60' },
+    { id: 'ptera',    name: 'Ptera',      tier: 'klein',  color: '#84e6ff' },
+    { id: 'troodon',  name: 'Troodon',    tier: 'klein',  color: '#c784ff' },
+    { id: 'juvi',     name: 'Juvi',       tier: 'klein',  color: '#c784ff', cssClass: 'juvi-pos' },
+    { id: 'egg',      name: 'Egg',        tier: 'klein',  color: '#ffd25a', cssClass: 'egg-pos' }
   ];
 
   const TIER_DOT_COLORS = {
@@ -1030,7 +1042,7 @@
 
     DINOS.forEach(dino => {
       const btn = document.createElement('button');
-      btn.className = 'dino-btn';
+      btn.className = `dino-btn ${dino.cssClass || ''}`;
       btn.id = `btn-${dino.id}`;
       
       let fossilHtml = '';
@@ -1060,6 +1072,10 @@
         fossilHtml = `<img src="dilo_skull.png" class="fossil-img-dilo" alt="Dilo Fossil">`;
       } else if (dino.id === 'herrera') {
         fossilHtml = `<img src="herra_skull.png" class="fossil-img-herrera" alt="Herrera Fossil">`;
+      } else if (dino.id === 'ptera') {
+        fossilHtml = `<img src="ptera_skull.png" class="fossil-img" alt="Ptera Fossil">`;
+      } else if (dino.id === 'troodon') {
+        fossilHtml = `<img src="troodon_skull.png" class="fossil-img" alt="Troodon Fossil">`;
       } else {
         fossilHtml = `<span class="dino-name" style="color: ${dino.color};">${dino.name}</span>`;
       }
@@ -1095,14 +1111,14 @@
 
   function triggerEpicMilestoneEffect() {
     const overlay = document.getElementById('epic-overlay');
-    const frame = document.getElementById('bone-frame');
+    const appBox = document.getElementById('tracker-app');
     
     overlay.classList.remove('active');
-    frame.classList.remove('epic-shake');
+    appBox.classList.remove('epic-shake');
     void overlay.offsetWidth;
     
     overlay.classList.add('active');
-    frame.classList.add('epic-shake');
+    appBox.classList.add('epic-shake');
   }
 
   function pushLog(msg, isMilestone = false) {
@@ -1142,10 +1158,10 @@
     
     if (delta > 0) {
       if (newVal > 0 && newVal % 5 === 0) {
-        triggerEpicMilestoneEffect(); // Brachialer Screen-Shake, dicke Blutklauen & roter Flash!
+        triggerEpicMilestoneEffect();
         pushLog(`🦖 MEILENSTEIN! ${newVal}x ${dino.name} erlegt!`, true);
       } else {
-        triggerSlashEffect(); // Normaler Schlitzer
+        triggerSlashEffect();
         pushLog(`+1 ${dino.name} erlegt!`, false);
       }
     } else {
