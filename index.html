@@ -145,7 +145,7 @@
       100% { width: 1900px; opacity: 0.95; }
     }
 
-    /* Eingestanzte Skelett-Muster am Rahmen */
+    /* EINGESTANZTE SKELETT-MUSTER AM RAHMEN (Stilvoll & Statisch) */
     .frame-pattern-layer {
       position: absolute;
       inset: 0;
@@ -164,16 +164,28 @@
     }
 
     .strip-top { top: 3px; left: 26px; right: 26px; height: 20px; }
-    .motif-rex-top { width: 52px; height: 20px; filter: drop-shadow(0 1px 0 rgba(255, 250, 240, 0.45)); }
+    .motif-top { width: 52px; height: 20px; filter: drop-shadow(0 1px 0 rgba(255, 250, 240, 0.45)); }
 
     .strip-bottom { bottom: 3px; left: 26px; right: 26px; height: 20px; flex-direction: row-reverse; }
-    .motif-rex-bottom { width: 52px; height: 20px; transform: scaleX(-1); filter: drop-shadow(0 1px 0 rgba(255, 250, 240, 0.45)); }
+    .motif-bottom { width: 52px; height: 20px; transform: scaleX(-1); filter: drop-shadow(0 1px 0 rgba(255, 250, 240, 0.45)); }
 
     .strip-left { top: 26px; bottom: 26px; left: 3px; width: 20px; flex-direction: column-reverse; }
-    .motif-rex-left { width: 20px; height: 52px; filter: drop-shadow(1px 0 0 rgba(255, 250, 240, 0.45)); }
+    .motif-left { width: 20px; height: 52px; filter: drop-shadow(1px 0 0 rgba(255, 250, 240, 0.45)); }
 
     .strip-right { top: 26px; bottom: 26px; right: 3px; width: 20px; flex-direction: column; }
-    .motif-rex-right { width: 20px; height: 52px; filter: drop-shadow(1px 0 0 rgba(255, 250, 240, 0.45)); }
+    .motif-right { width: 20px; height: 52px; filter: drop-shadow(1px 0 0 rgba(255, 250, 240, 0.45)); }
+
+    /* Trike-Bild im Rahmen: Exakt gleiche Größe wie die Rexe */
+    .trike-motif-img {
+      object-fit: contain;
+      filter: brightness(0.18) contrast(2.2) drop-shadow(0 1px 0 rgba(255, 250, 240, 0.45));
+      opacity: 0.9;
+    }
+
+    .strip-top .trike-motif-img { width: 52px; height: 20px; }
+    .strip-bottom .trike-motif-img { width: 52px; height: 20px; transform: scaleX(-1); }
+    .strip-right .trike-motif-img { width: 20px; height: 52px; transform: rotate(90deg); }
+    .strip-left .trike-motif-img { width: 20px; height: 52px; transform: rotate(-90deg); }
 
     /* Innerer Tracker Inhalt */
     .tracker-app {
@@ -191,7 +203,7 @@
         inset 0 0 25px rgba(0, 0, 0, 0.85);
     }
 
-    /* Screen-Shake NUR für den inneren Tracker (Hintergrund-Rex bleibt absolut starr!) */
+    /* Screen-Shake NUR für den inneren Tracker (Hintergrund-Fossil bleibt absolut starr!) */
     @keyframes epicShakeApp {
       0% { transform: translate(0, 0) rotate(0deg); }
       15% { transform: translate(-6px, 4px) rotate(-0.5deg); }
@@ -206,7 +218,7 @@
       animation: epicShakeApp 0.5s ease-in-out;
     }
 
-    /* Großes T-Rex Hintergrund-Fossil (sitzt fest und starr) */
+    /* Großes Hintergrund-Fossil */
     .bg-fossil-layer {
       position: absolute;
       inset: 0;
@@ -216,6 +228,7 @@
       pointer-events: none;
       z-index: 1;
       opacity: 0.25;
+      will-change: opacity, transform;
     }
 
     .bg-fossil-img {
@@ -223,6 +236,15 @@
       height: 110%;
       object-fit: contain;
       transform: translateX(12px);
+      filter: sepia(1) hue-rotate(-20deg) brightness(1.2);
+      will-change: transform;
+    }
+
+    /* Trike-Hintergrund: Gleicher Look wie beim Rex, ohne schwarzen Hintergrund */
+    .bg-fossil-img.trike-bg {
+      width: 96%;
+      height: 96%;
+      transform: translateY(8px);
       filter: sepia(1) hue-rotate(-20deg) brightness(1.2);
     }
 
@@ -382,19 +404,29 @@
     .duo-header:hover .edit-name-btn { opacity: 1; }
     .edit-name-btn:hover { color: #f0ece1; background: rgba(255, 255, 255, 0.07); }
 
-    /* Gespielter Dino Dropdown (blockiert auf Rex) */
+    /* Gespielter Dino Dropdown (aktiviert für Rex & Trike) */
     .player-dino-select {
-      background: rgba(21, 17, 13, 0.8);
-      border: 1px solid #362c22;
-      color: #d4a373;
+      background: rgba(21, 17, 13, 0.9);
+      border: 1px solid #4a3d30;
+      color: #e6c280;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 700;
       padding: 5px 8px;
       border-radius: 8px;
       outline: none;
-      cursor: not-allowed;
-      opacity: 0.85;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .player-dino-select:hover {
+      border-color: #dfd4be;
+      background: #231b14;
+    }
+
+    .player-dino-select option {
+      background: #16110d;
+      color: #f4f1ea;
     }
 
     .score-body {
@@ -466,7 +498,7 @@
       margin-bottom: 16px;
     }
 
-    /* Spezielle Platzierung für Juvi und Egg (sitzen direkt nebeneinander mittig unten) */
+    /* Juvi und Egg positioniert */
     .dino-btn.juvi-pos {
       grid-column: 2;
     }
@@ -669,11 +701,13 @@
       gap: 12px;
     }
 
-    /* Killfeed-Container */
+    /* Killfeed-Container: Feste Höhe für 4 Zeilen, damit der Tracker beim Klicken nicht wächst */
     .killfeed-container {
       display: flex;
       flex-direction: column;
+      justify-content: flex-start;
       gap: 3px;
+      height: 62px;
       max-width: 310px;
       overflow: hidden;
     }
@@ -761,6 +795,7 @@
 <body>
 
 <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+  <!-- Kleines T-Rex Skelett -->
   <symbol id="rex-skeleton" viewBox="0 0 120 48">
     <g fill="#2b241b">
       <path d="M4,12 C2,8 6,3 14,3 C20,3 24,5 25,9 L21,12 L15,12 L14,15 L22,16 L20,21 C14,22 8,20 6,16 L11,16 L11,14 L4,14 Z"/>
@@ -791,43 +826,14 @@
       <div class="epic-claw epic-claw-3"></div>
     </div>
 
-    <div class="frame-pattern-layer">
-      <div class="frame-strip strip-top">
-        <svg class="motif-rex-top"><use href="#rex-skeleton"/></svg>
-        <svg class="motif-rex-top"><use href="#rex-skeleton"/></svg>
-        <svg class="motif-rex-top"><use href="#rex-skeleton"/></svg>
-        <svg class="motif-rex-top"><use href="#rex-skeleton"/></svg>
-      </div>
-
-      <div class="frame-strip strip-right">
-        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-        <svg class="motif-rex-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-      </div>
-
-      <div class="frame-strip strip-bottom">
-        <svg class="motif-rex-bottom"><use href="#rex-skeleton"/></svg>
-        <svg class="motif-rex-bottom"><use href="#rex-skeleton"/></svg>
-        <svg class="motif-rex-bottom"><use href="#rex-skeleton"/></svg>
-        <svg class="motif-rex-bottom"><use href="#rex-skeleton"/></svg>
-      </div>
-
-      <div class="frame-strip strip-left">
-        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-        <svg class="motif-rex-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="#rex-skeleton" width="120" height="48"/></g></svg>
-      </div>
-    </div>
+    <!-- Eingestanzte Skelett-Muster am Rahmen (wechselt dynamisch zwischen Rex und Trike) -->
+    <div class="frame-pattern-layer" id="frame-pattern-layer"></div>
 
     <!-- Tracker-App-Bereich -->
     <div class="tracker-app" id="tracker-app">
-      <!-- Großes T-Rex Hintergrund-Fossil (sitzt fest und starr) -->
+      <!-- Großes Hintergrund-Fossil (wechselt je nach gewähltem Dino) -->
       <div class="bg-fossil-layer" id="bg-fossil">
-        <img src="t-rex_background.png" class="bg-fossil-img" alt="T-Rex Background Fossil">
+        <img src="t-rex_background.png" id="bg-fossil-img" class="bg-fossil-img" alt="Background Fossil">
       </div>
 
       <div class="top-bar">
@@ -860,9 +866,10 @@
             </div>
           </div>
           <div>
-            <!-- Dropdown auf Rex blockiert -->
-            <select class="player-dino-select" id="player-dino" disabled title="Fester Rex-Modus">
+            <!-- Aktiviertes Dropdown für Rex & Trike -->
+            <select class="player-dino-select" id="player-dino" onchange="changePlayerDino(this.value)" title="Gespielten Dino wählen">
               <option value="Rex">Als: Rex</option>
+              <option value="Trike">Als: Trike</option>
             </select>
           </div>
         </div>
@@ -978,11 +985,91 @@
 
   DINOS.forEach(d => state.kills[d.id] = 0);
 
+  function renderFramePattern(dinoType) {
+    const layer = document.getElementById('frame-pattern-layer');
+
+    if (dinoType === 'Trike') {
+      const makeTrike = (posClass) =>
+        `<img src="trike_skull.png" class="trike-motif-img ${posClass}" alt="Trike Motif">`;
+
+      layer.innerHTML = `
+        <div class="frame-strip strip-top">${Array(4).fill(makeTrike('motif-top')).join('')}</div>
+        <div class="frame-strip strip-right">${Array(5).fill(makeTrike('motif-right')).join('')}</div>
+        <div class="frame-strip strip-bottom">${Array(4).fill(makeTrike('motif-bottom')).join('')}</div>
+        <div class="frame-strip strip-left">${Array(5).fill(makeTrike('motif-left')).join('')}</div>
+      `;
+      return;
+    }
+
+    const symbolId = '#rex-skeleton';
+    const topItems = Array(4).fill(`<svg class="motif-top"><use href="${symbolId}"/></svg>`).join('');
+    const bottomItems = Array(4).fill(`<svg class="motif-bottom"><use href="${symbolId}"/></svg>`).join('');
+    const rightItems = Array(5).fill(
+      `<svg class="motif-right" viewBox="0 0 48 120"><g transform="translate(48, 0) rotate(90)"><use href="${symbolId}" width="120" height="48"/></g></svg>`
+    ).join('');
+    const leftItems = Array(5).fill(
+      `<svg class="motif-left" viewBox="0 0 48 120"><g transform="translate(0, 120) rotate(-90)"><use href="${symbolId}" width="120" height="48"/></g></svg>`
+    ).join('');
+
+    layer.innerHTML = `
+      <div class="frame-strip strip-top">${topItems}</div>
+      <div class="frame-strip strip-right">${rightItems}</div>
+      <div class="frame-strip strip-bottom">${bottomItems}</div>
+      <div class="frame-strip strip-left">${leftItems}</div>
+    `;
+  }
+
   function init() {
     setupTitleEditor();
     localStorage.removeItem('rex_duo_tracker_clean_v1');
+    renderFramePattern(state.playerDino);
     renderGrid();
     updateUI();
+  }
+
+  let activeFossilAnim = null;
+
+  function triggerFossilGlide() {
+    const layer = document.getElementById('bg-fossil');
+    if (activeFossilAnim) {
+      activeFossilAnim.cancel();
+      activeFossilAnim = null;
+    }
+
+    if (typeof layer.animate === 'function') {
+      activeFossilAnim = layer.animate(
+        [
+          { opacity: 0.05, transform: 'translateY(-28px)' },
+          { opacity: 0.55, transform: 'translateY(-6px)', offset: 0.35 },
+          { opacity: 0.25, transform: 'translateY(0px)' }
+        ],
+        {
+          duration: 1100,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          fill: 'forwards'
+        }
+      );
+    }
+  }
+
+  function changePlayerDino(dino) {
+    state.playerDino = dino;
+    const bgImg = document.getElementById('bg-fossil-img');
+    
+    if (dino === 'Trike') {
+      bgImg.src = 'trike_background.png';
+      bgImg.classList.add('trike-bg');
+      bgImg.alt = 'Trike Background Fossil';
+    } else {
+      bgImg.src = 't-rex_background.png';
+      bgImg.classList.remove('trike-bg');
+      bgImg.alt = 'T-Rex Background Fossil';
+    }
+
+    triggerFossilGlide();
+    renderFramePattern(dino);
+    pushLog(`Gespielter Dino: ${dino}`, false);
+    if (state.sound) playClickSound(440);
   }
 
   function setGameMode(mode) {
@@ -1246,12 +1333,13 @@
 
     let currentName = document.getElementById('duo-title').textContent.trim();
     let modeTitle = state.mode === 'solo' 
-      ? `Solo [${currentName}] — Gespielt als: Rex` 
-      : `Duo [${currentName}] — Gespielt als: Rex`;
+      ? `Solo [${currentName}] — Gespielt als: ${state.playerDino}` 
+      : `Duo [${currentName}] — Gespielt als: ${state.playerDino}`;
       
     let headerLabel = state.mode === 'solo' ? 'Solo Kills' : 'Gemeinsame Kills';
+    let emoji = state.playerDino === 'Trike' ? ':sauropod:' : ':t_rex:';
 
-    let discordOutput = `:t_rex: **The Isle Kill-Tracker (${modeTitle})** :t_rex:\n\n${headerLabel}: **${total}**\n----------------------------\n${activeDinosText}`;
+    let discordOutput = `${emoji} **The Isle Kill-Tracker (${modeTitle})** ${emoji}\n\n${headerLabel}: **${total}**\n----------------------------\n${activeDinosText}`;
 
     const textarea = document.createElement('textarea');
     textarea.value = discordOutput;
