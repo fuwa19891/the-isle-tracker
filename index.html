@@ -227,7 +227,7 @@
       justify-content: space-between;
       align-items: center;
       text-align: center;
-      padding: 28px 8px 18px 8px;
+      padding: 24px 8px 16px 8px;
     }
 
     .start-menu.is-hidden { display: none; }
@@ -237,7 +237,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 8px;
+      padding-top: 4px;
     }
 
     .rooted-title-svg {
@@ -251,19 +251,19 @@
     .dino-choice-grid {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin: 16px 0 14px 0;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 14px 0 12px 0;
     }
 
     .dino-choice-card {
       position: relative;
       overflow: hidden;
-      min-height: 158px;
+      min-height: 154px;
       background: rgba(16, 12, 9, 0.72);
       border: 1.5px solid #4a3d30;
       border-radius: 14px;
-      padding: 14px 12px;
+      padding: 12px 8px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
@@ -316,10 +316,10 @@
 
     .choice-badge {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
-      letter-spacing: 0.9px;
-      padding: 2px 8px;
+      letter-spacing: 0.7px;
+      padding: 2px 7px;
       border-radius: 999px;
       background: rgba(21, 17, 13, 0.9);
       border: 1px solid #4a3d30;
@@ -334,15 +334,15 @@
     .choice-name {
       font-family: 'Cinzel', serif;
       font-weight: 900;
-      font-size: 17px;
-      letter-spacing: 0.9px;
+      font-size: 14.5px;
+      letter-spacing: 0.6px;
       color: #f4f1ea;
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
     }
 
     .choice-role {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
+      font-size: 10px;
       color: #c2b6a3;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
     }
@@ -449,6 +449,10 @@
 
     .bg-fossil-img.trike-bg {
       transform: translateY(6px) scale(0.92);
+    }
+
+    .bg-fossil-img.stego-bg {
+      transform: translateY(4px) scale(0.92);
     }
 
     .top-bar, .score-card, .grid-header, .buttons-area, .footer-bar {
@@ -991,7 +995,7 @@
           <button type="button" class="dino-choice-card selected" id="choice-rex" onclick="selectMenuDino('Rex')">
             <img src="t-rex_background.png" class="choice-bg-fossil" alt="" aria-hidden="true">
             <div class="choice-content">
-              <span class="choice-badge">APEX · CARNIVORE</span>
+              <span class="choice-badge">APEX · CARNI</span>
               <span class="choice-name">T-REX</span>
               <span class="choice-role">Jäger &amp; Ambush</span>
             </div>
@@ -1000,9 +1004,18 @@
           <button type="button" class="dino-choice-card" id="choice-trike" onclick="selectMenuDino('Trike')">
             <img src="trike_background.png" class="choice-bg-fossil trike-choice-bg" alt="" aria-hidden="true">
             <div class="choice-content">
-              <span class="choice-badge">APEX · HERBIVORE</span>
+              <span class="choice-badge">APEX · HERBI</span>
               <span class="choice-name">TRICERATOPS</span>
-              <span class="choice-role">Horde &amp; Verteidigung</span>
+              <span class="choice-role">Horde &amp; Tank</span>
+            </div>
+          </button>
+
+          <button type="button" class="dino-choice-card" id="choice-stego" onclick="selectMenuDino('Stego')">
+            <img src="stego_background.png" class="choice-bg-fossil stego-choice-bg" alt="" aria-hidden="true">
+            <div class="choice-content">
+              <span class="choice-badge">HEAVY · HERBI</span>
+              <span class="choice-name">STEGOSAURUS</span>
+              <span class="choice-role">Thagomizer &amp; Wall</span>
             </div>
           </button>
         </div>
@@ -1058,6 +1071,7 @@
               <select class="player-dino-select" id="player-dino" onchange="changePlayerDino(this.value)" title="Gespielten Dino wählen">
                 <option value="Rex">Als: Rex</option>
                 <option value="Trike">Als: Trike</option>
+                <option value="Stego">Als: Stego</option>
               </select>
             </div>
           </div>
@@ -1227,6 +1241,12 @@
     return !document.getElementById('start-menu')?.classList.contains('is-hidden');
   }
 
+  function getSettledBgTransform(dino) {
+    if (dino === 'Trike') return 'translateY(6px) scale(0.92)';
+    if (dino === 'Stego') return 'translateY(4px) scale(0.92)';
+    return 'translateX(8px) scale(0.92)';
+  }
+
   function syncDinoVisuals(dino, withHuntEntrance = false) {
     state.playerDino = dino;
     const bgImg = document.getElementById('bg-fossil-img');
@@ -1236,17 +1256,24 @@
     if (selectEl) selectEl.value = dino;
     document.getElementById('choice-rex')?.classList.toggle('selected', dino === 'Rex');
     document.getElementById('choice-trike')?.classList.toggle('selected', dino === 'Trike');
+    document.getElementById('choice-stego')?.classList.toggle('selected', dino === 'Stego');
+
+    bgImg.classList.remove('trike-bg', 'stego-bg');
+    ghostImg.classList.remove('trike-bg', 'stego-bg');
 
     if (dino === 'Trike') {
       bgImg.src = 'trike_background.png';
       bgImg.classList.add('trike-bg');
       ghostImg.src = 'trike_background.png';
       ghostImg.classList.add('trike-bg');
+    } else if (dino === 'Stego') {
+      bgImg.src = 'stego_background.png';
+      bgImg.classList.add('stego-bg');
+      ghostImg.src = 'stego_background.png';
+      ghostImg.classList.add('stego-bg');
     } else {
       bgImg.src = 't-rex_background.png';
-      bgImg.classList.remove('trike-bg');
       ghostImg.src = 't-rex_background.png';
-      ghostImg.classList.remove('trike-bg');
     }
 
     renderFramePattern(isMenuOpen() ? 'Evolution' : dino);
@@ -1281,7 +1308,7 @@
     const ghost = document.getElementById('fossil-reveal-ghost');
     const bgLayer = document.getElementById('bg-fossil');
     const trackerView = document.getElementById('tracker-view');
-    const settledTransform = dino === 'Trike' ? 'translateY(6px) scale(0.92)' : 'translateX(8px) scale(0.92)';
+    const settledTransform = getSettledBgTransform(dino);
 
     if (ghostAnim) ghostAnim.cancel();
     if (bgAnim) bgAnim.cancel();
@@ -1561,7 +1588,7 @@
     const currentName = document.getElementById('duo-title').textContent.trim();
     const modeTitle = `${state.mode === 'solo' ? 'Solo' : 'Duo'} [${currentName}] — Gespielt als: ${state.playerDino}`;
     const headerLabel = state.mode === 'solo' ? 'Solo Kills' : 'Gemeinsame Kills';
-    const emoji = state.playerDino === 'Trike' ? ':sauropod:' : ':t_rex:';
+    const emoji = state.playerDino === 'Trike' ? ':sauropod:' : (state.playerDino === 'Stego' ? ':herbivore:' : ':t_rex:');
     const output = `${emoji} **The Isle: Kill Counter (${modeTitle})** ${emoji}\n\n${headerLabel}: **${total}**\n----------------------------\n${activeText}`;
 
     const ta = document.createElement('textarea');
