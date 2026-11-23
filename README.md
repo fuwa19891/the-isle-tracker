@@ -1,41 +1,77 @@
-# 🦖 The Isle - Kill Tracker
+# The Isle - Apex Kill Counter
 
-Ein stylischer, interaktiver Kill-Tracker im Bernstein- und Urzeit-Look, speziell optimiert als Web-App (PWA) für *The Isle*. 
-
----
-
-### 🇩🇪 Deutsch
-
-#### Features
-* **Duo- & Solo-Modus:** Flexibel umschaltbar zwischen Solo- und gemeinsamen Kills.
-* **Namen-Editor:** Klicke einfach auf den Namen (oder den Stift-Button), um eure Spielernamen direkt zu bearbeiten und abzuspeichern.
-* **Bernstein-Buttons:** Interaktive Beute-Buttons im Fossilien-Design mit integrierten Dino-Schädeln und Namensschildchen.
-* **Tier-Unterteilung:** Automatische Zählung nach Apex, Mittel und Klein.
-* **Discord-Export:** Kopiere deine aktuelle Kill-Liste mit einem Klick formatiert in die Zwischenablage für Discord.
-* **Installierbar (PWA):** Kann direkt als App auf dem Desktop oder Smartphone installiert werden (inkl. eigenem App-Icon).
-* **Sound- & Undo-Support:** Integrierte Soundeffekte beim Klick und Undo-Funktion (Taste `[Z]` oder über den Button).
-
-#### Verwendung
-1. Öffne die Web-App oder installiere sie über deinen Browser.
-2. Trage eure Namen ein.
-3. Klicke auf die Dinos, um Kills hinzuzufügen (Rechtsklick zieht Kills ab).
-4. Kopiere das Ergebnis für Discord über den Kopier-Button.
+[Deutsch](#deutsch) | [English](#english)
 
 ---
 
-### 🇬🇧 English
+## Deutsch
 
-#### Features
-* **Duo & Solo Mode:** Easily switch between solo and shared kills.
-* **Name Editor:** Click on the name (or the edit icon) to customize and save your player names.
-* **Amber Buttons:** Interactive fossil-styled loot buttons featuring embedded dino skulls and custom name tags.
-* **Tier Categories:** Automatic counting grouped by Apex, Medium, and Small tiers.
-* **Discord Export:** Copy your formatted kill list to the clipboard with a single click, ready for Discord.
-* **Installable (PWA):** Can be installed directly as an app on your desktop or mobile device (includes a custom app icon).
-* **Sound & Undo Support:** Built-in click sound effects and an undo function (`[Z]` key or via button).
+Ein interaktiver Kill-Tracker im Fossil- und Bernstein-Design für **The Isle**, optimiert für den Einsatz als eigenständiges App-Fenster (PWA) auf dem Desktop oder direkt im Browser.
 
-#### Usage
-1. Open the web app or install it via your browser.
-2. Enter your names.
-3. Click on the dinosaurs to add kills (right-click to subtract kills).
-4. Copy the result for Discord using the copy button.
+### Features
+
+- **Startmenü & Dino-Auswahl:** Wähle vor oder während der Jagd deinen gespielten Dino (**T-Rex**, **Deino**, **Trike** oder **Stego**) inklusive passendem Hintergrundfossil und Rahmenmuster.
+- **Spielmodi:** Unterstützt **Solo**, **Duo** und **Trio** mit anpassbarem Team-/Spielernamen direkt im Score-Header.
+- **Zweisprachig (DE / EN):** Nahtloser Wechsel zwischen Deutsch und Englisch im Startmenü sowie im aktiven Tracker.
+- **Beute-Tracking nach Kategorie:** Schnelles Zählen von **Carnivore**, **Herbivore** und **Snack** über Bernstein-Buttons:
+  - **Linksklick:** `+1` Kill
+  - **Rechtsklick:** `-1` Kill (Korrektur)
+  - **`Z`-Taste oder Undo-Button:** Letzte Aktion rückgängig machen
+- **Effekte & Killfeed:** Visuelle Schlitzer-Effekte bei Kills, epischer Meilenstein-Effekt bei jedem 5. Kill eines Ziels sowie ein Live-Killfeed (die letzten 4 Einträge).
+- **Discord-Export:** Kopiert eine formatierte Kill-Übersicht inklusive Modus, Namen, gespieltem Dino und Gesamtzahlen direkt in die Zwischenablage.
+- **Sound & Reset:** Audio-Feedback umschaltbar und vollständiges Zurücksetzen aller Kills per Reset-Button.
+- **App-Installation (PWA):** Kann über Chrome/Edge als eigene App (Standalone-Fenster im Format `605px x 998px`) installiert werden.
+
+### Nutzung & App-Installation
+
+1. Öffne die HTML-Anwendung über einen lokalen Server oder gehostet (z. B. über GitHub Pages).
+2. Wähle im Startmenü deinen Dino, den Modus (**Solo**, **Duo**, **Trio**) und die Sprache (**DE** / **EN**) und klicke auf **JAGD STARTEN**.
+3. **Als App installieren:** Klicke in Chrome oder Edge in der Adressleiste auf das **Installieren-Symbol** bzw. über das Browser-Menü auf **Diese Seite als App installieren**.
+
+### Benötigte Dateien im Projektordner
+
+Damit alle Grafiken und App-Icons sauber laden, sollten folgende Dateien im selben Verzeichnis liegen:
+
+- `index.html` (bzw. deine HTML-Datei)
+- `icon.png`
+- `amber-stone.png`
+- `evolution.png`
+- `t-rex_background.png`, `deino_background.png`, `trike_background.png`, `stego_background.png`
+- Schädel- und Snack-Grafiken (`t-rex_skull.png`, `deino_skull.png`, `Allo_skull.png`, `cera_skull.png`, `dilo_skull.png`, `carno_skull.png`, `omni_skull.png`, `trike_skull.png`, `stego_skull.png`, `kentro_skull.png`, `maia_skull.png`, `teno_skull.png`, `pachy_skull.png`, `snack.png`)
+
+---
+
+## English
+
+An interactive kill tracker styled with fossil and amber aesthetics for **The Isle**, built to run smoothly in the browser or as an installable standalone app window (PWA).
+
+### Features
+
+- **Start Menu & Dino Selection:** Choose your played dinosaur (**T-Rex**, **Deino**, **Trike**, or **Stego**) before or during a hunt, complete with matching background fossils and frame motifs.
+- **Game Modes:** Supports **Solo**, **Duo**, and **Trio** with an editable player/team name right in the score header.
+- **Bilingual (DE / EN):** Switch effortlessly between German and English from both the start menu and the tracker view.
+- **Prey Tracking by Tier:** Track **Carnivore**, **Herbivore**, and **Snack** targets using amber buttons:
+  - **Left-click:** `+1` kill
+  - **Right-click:** `-1` kill (correction)
+  - **`Z` key or Undo button:** Revert the last action
+- **Effects & Killfeed:** Claw slash animations on kills, an epic milestone effect on every 5th kill of a target, and a live killfeed showing the latest 4 events.
+- **Discord Export:** Copies a formatted kill summary—including mode, name, played dinosaur, and totals—to your clipboard.
+- **Sound & Reset:** Toggle sound effects on/off and reset all tracked kills with a single click.
+- **Installable App (PWA):** Can be installed in Chrome or Edge as a standalone app window (`605px x 998px`).
+
+### Usage & App Installation
+
+1. Open the HTML file via a local web server or hosted page (such as GitHub Pages).
+2. Pick your dinosaur, mode (**Solo**, **Duo**, **Trio**), and language (**DE** / **EN**) on the start screen, then click **START HUNT**.
+3. **Install as App:** Click the **Install** icon in the Chrome/Edge address bar or choose **Install page as app** from the browser menu.
+
+### Project Assets
+
+Make sure the following asset files are placed alongside your HTML file:
+
+- `index.html` (or your main HTML file)
+- `icon.png`
+- `amber-stone.png`
+- `evolution.png`
+- `t-rex_background.png`, `deino_background.png`, `trike_background.png`, `stego_background.png`
+- Skull & snack images (`t-rex_skull.png`, `deino_skull.png`, `Allo_skull.png`, `cera_skull.png`, `dilo_skull.png`, `carno_skull.png`, `omni_skull.png`, `trike_skull.png`, `stego_skull.png`, `kentro_skull.png`, `maia_skull.png`, `teno_skull.png`, `pachy_skull.png`, `snack.png`)
