@@ -6,6 +6,8 @@
   <title>The Isle - Apex Kill Counter</title>
 
   <link rel="manifest" id="pwa-manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
   <meta name="application-name" content="The Isle - Apex Kill Counter">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1329,6 +1331,7 @@
   function setupPwaManifest() {
     try {
       const startUrl = window.location.href.split('#')[0];
+      const iconUrl = new URL('icon.png', window.location.href).href;
       const manifestData = {
         name: 'The Isle - Apex Kill Counter',
         short_name: 'The Isle - Apex Kill Counter',
@@ -1336,7 +1339,21 @@
         display: 'standalone',
         background_color: '#16110d',
         theme_color: '#16110d',
-        window_size: APP_WINDOW_SIZE
+        window_size: APP_WINDOW_SIZE,
+        icons: [
+          {
+            src: iconUrl,
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: iconUrl,
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          }
+        ]
       };
       const linkEl = document.getElementById('pwa-manifest');
       if (linkEl) {
