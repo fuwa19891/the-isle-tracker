@@ -284,7 +284,7 @@
       justify-content: space-between;
       align-items: center;
       text-align: center;
-      padding: 14px 8px 14px 8px;
+      padding: 14px 8px 10px 8px;
     }
 
     .start-menu.is-hidden { display: none; }
@@ -433,8 +433,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
-      padding-bottom: 8px;
+      gap: 12px;
+      padding-bottom: 2px;
     }
 
     .start-options-row {
@@ -473,6 +473,30 @@
 
     .start-play-btn:hover { filter: brightness(1.15); }
     .start-play-btn:active { transform: scale(0.97); }
+
+    .made-by-start {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: #b89d72;
+      opacity: 0.85;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+      margin-top: 2px;
+    }
+
+    .made-by-footer {
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #9c9183;
+      opacity: 0.72;
+      margin-top: 6px;
+    }
 
     .menu-back-btn {
       background: rgba(21, 17, 13, 0.85);
@@ -558,7 +582,7 @@
       transform: translate(8px, 6px) scale(1.04);
     }
 
-    .top-bar, .score-card, .grid-header, .buttons-area, .footer-bar {
+    .top-bar, .score-card, .grid-header, .buttons-area, .footer-bar, .made-by-footer {
       position: relative;
       z-index: 2;
     }
@@ -1202,6 +1226,7 @@
           </div>
 
           <button type="button" class="start-play-btn" onclick="enterTracker()" data-i18n="startHunt">JAGD STARTEN</button>
+          <div class="made-by-start" data-i18n="madeBy">MADE BY H4NFY</div>
         </div>
       </div>
 
@@ -1286,39 +1311,42 @@
 
         <div class="buttons-area" id="buttons-area"></div>
 
-        <div class="footer-bar">
-          <div class="killfeed-container" id="killfeed-container">
-            <div class="log-line feed-0">Bereit für die Jagd...</div>
+        <div>
+          <div class="footer-bar">
+            <div class="killfeed-container" id="killfeed-container">
+              <div class="log-line feed-0">Bereit für die Jagd...</div>
+            </div>
+            <div class="footer-actions">
+              <button class="circle-btn copy-btn" onclick="copyDinoList()" data-i18n-title="copyTitle">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+              </button>
+              <button class="circle-btn" onclick="undoLast()" data-i18n-title="undoTitle">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
+                </svg>
+              </button>
+              <button class="circle-btn sound-active" id="sound-btn" onclick="toggleSound()" data-i18n-title="soundTitle">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                </svg>
+              </button>
+              <button class="circle-btn reset-btn" onclick="resetTracker()" data-i18n-title="resetTitle">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+              </button>
+            </div>
           </div>
-          <div class="footer-actions">
-            <button class="circle-btn copy-btn" onclick="copyDinoList()" data-i18n-title="copyTitle">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-              </svg>
-            </button>
-            <button class="circle-btn" onclick="undoLast()" data-i18n-title="undoTitle">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
-              </svg>
-            </button>
-            <button class="circle-btn sound-active" id="sound-btn" onclick="toggleSound()" data-i18n-title="soundTitle">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-              </svg>
-            </button>
-            <button class="circle-btn reset-btn" onclick="resetTracker()" data-i18n-title="resetTitle">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polyline points="23 4 23 10 17 10"></polyline>
-                <polyline points="1 20 1 14 7 14"></polyline>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-              </svg>
-            </button>
-          </div>
+          <div class="made-by-footer" data-i18n="madeBy">MADE BY H4NFY</div>
         </div>
       </div>
     </div>
@@ -1370,6 +1398,7 @@
       duo: 'Duo',
       trio: 'Trio',
       startHunt: 'JAGD STARTEN',
+      madeBy: 'MADE BY H4NFY',
       menuBtn: 'MENÜ',
       menuBtnTitle: 'Zurück zur Dino-Auswahl',
       widgetMode: (mode) => `WIDGET-MODUS (${mode.toUpperCase()})`,
@@ -1446,6 +1475,7 @@
       duo: 'Duo',
       trio: 'Trio',
       startHunt: 'START HUNT',
+      madeBy: 'MADE BY H4NFY',
       menuBtn: 'MENU',
       menuBtnTitle: 'Back to dino selection',
       widgetMode: (mode) => `WIDGET MODE (${mode.toUpperCase()})`,
