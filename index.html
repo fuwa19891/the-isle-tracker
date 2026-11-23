@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Isle Apex Kill Counter</title>
+  <title>The Isle - Apex Kill Counter</title>
 
   <link rel="manifest" id="pwa-manifest" href="manifest.json">
+  <meta name="application-name" content="The Isle - Apex Kill Counter">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="The Isle Apex Kill Counter">
+  <meta name="apple-mobile-web-app-title" content="The Isle - Apex Kill Counter">
   <meta name="theme-color" content="#16110d">
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1072,7 +1073,7 @@
       <!-- STARTMENÜ -->
       <div class="start-menu" id="start-menu">
         <div class="start-header">
-          <svg class="rooted-title-svg" viewBox="0 0 430 118" role="img" aria-label="The Isle Apex Kill Counter">
+          <svg class="rooted-title-svg" viewBox="0 0 430 118" role="img" aria-label="The Isle - Apex Kill Counter">
             <defs>
               <!-- Eingestanzte Knochen-Farbverläufe -->
               <linearGradient id="carvedBoneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -1326,20 +1327,19 @@
 
   function setupPwaManifest() {
     try {
+      const startUrl = window.location.href.split('#')[0];
       const manifestData = {
-        name: 'The Isle Apex Kill Counter',
-        short_name: 'Apex Kill Counter',
-        start_url: '.',
+        name: 'The Isle - Apex Kill Counter',
+        short_name: 'The Isle - Apex Kill Counter',
+        start_url: startUrl,
         display: 'standalone',
         background_color: '#16110d',
         theme_color: '#16110d',
         window_size: APP_WINDOW_SIZE
       };
-      const blob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
-      const url = URL.createObjectURL(blob);
       const linkEl = document.getElementById('pwa-manifest');
-      if (linkEl && window.location.protocol === 'file:') {
-        linkEl.href = url;
+      if (linkEl) {
+        linkEl.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestData));
       }
     } catch {}
   }
@@ -2041,7 +2041,7 @@
       : (state.playerDino === 'Stego'
         ? ':herbivore:'
         : (state.playerDino === 'Deino' ? ':crocodile:' : ':t_rex:'));
-    const output = `${emoji} **The Isle Apex Kill Counter (${modeTitle})** ${emoji}\n\n${headerLabel}: **${total}**\n----------------------------\n${activeText}`;
+    const output = `${emoji} **The Isle - Apex Kill Counter (${modeTitle})** ${emoji}\n\n${headerLabel}: **${total}**\n----------------------------\n${activeText}`;
 
     const ta = document.createElement('textarea');
     ta.value = output;
