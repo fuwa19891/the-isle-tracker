@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Isle: Kill Counter</title>
+  <title>The Isle Apex Kill Counter</title>
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-title" content="The Isle: Kill Counter">
+  <link rel="manifest" id="pwa-manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="The Isle Apex Kill Counter">
   <meta name="theme-color" content="#16110d">
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
@@ -17,6 +19,8 @@
       --border-subtle: #4a3d30;
       --text-main: #e6eae7;
       --text-muted: #9c9183;
+      --app-width: 605px;
+      --app-height: 998px;
     }
 
     * {
@@ -26,7 +30,7 @@
 
     body {
       margin: 0;
-      padding: 32px 18px 26px 18px;
+      padding: 24px 18px;
       background-color: #0c0e0d;
       color: var(--text-main);
       font-family: 'Inter', sans-serif;
@@ -40,6 +44,55 @@
       position: relative;
       width: 100%;
       max-width: 560px;
+    }
+
+    /* Installierte App / Standalone-Fenster: exakt 605px x 998px */
+    @media (display-mode: standalone), (display-mode: fullscreen) {
+      body {
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .fossil-wrapper {
+        width: var(--app-width);
+        max-width: var(--app-width);
+        height: var(--app-height);
+        max-height: var(--app-height);
+      }
+
+      .bone-frame {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .tracker-app {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .start-menu,
+      .tracker-view {
+        flex: 1;
+        min-height: 0;
+        height: 100%;
+      }
+
+      .tracker-view:not(.is-hidden) {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .dino-choice-card {
+        height: 220px;
+      }
     }
 
     .bone-frame {
@@ -199,7 +252,7 @@
       position: relative;
       z-index: 10;
       background:
-        linear-gradient(rgba(20, 15, 11, 0.88), rgba(15, 11, 8, 0.94)),
+        linear-gradient(rgba(20, 15, 11, 0.84), rgba(15, 11, 8, 0.91)),
         radial-gradient(circle at 50% 30%, #423222 0%, #1a130e 80%);
       border: 2px solid #4a3d30;
       border-radius: 14px;
@@ -227,7 +280,7 @@
       justify-content: space-between;
       align-items: center;
       text-align: center;
-      padding: 24px 8px 16px 8px;
+      padding: 14px 8px 14px 8px;
     }
 
     .start-menu.is-hidden { display: none; }
@@ -237,46 +290,53 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 4px;
+      padding-top: 2px;
     }
 
     .rooted-title-svg {
       width: 100%;
-      max-width: 410px;
+      max-width: 440px;
       height: auto;
       display: block;
-      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.85));
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.92));
     }
 
-    .dino-choice-grid {
+    .menu-groups-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    .dino-choice-row {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 14px 0 12px 0;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
     .dino-choice-card {
       position: relative;
       overflow: hidden;
-      min-height: 154px;
-      background: rgba(16, 12, 9, 0.72);
+      height: 176px;
+      background: rgba(16, 12, 9, 0.78);
       border: 1.5px solid #4a3d30;
       border-radius: 14px;
-      padding: 12px 8px;
+      padding: 9px 10px;
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
+      justify-items: center;
+      gap: 4px;
       transition: transform 0.14s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
     }
 
     .dino-choice-card:hover {
       transform: translateY(-2px);
       border-color: #9e815b;
-      background: rgba(28, 21, 15, 0.85);
+      background: rgba(28, 21, 15, 0.88);
     }
 
     .dino-choice-card.selected {
@@ -285,45 +345,27 @@
       box-shadow: 0 0 20px rgba(230, 194, 128, 0.2), inset 0 0 16px rgba(230, 194, 128, 0.1);
     }
 
-    .choice-bg-fossil {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.16;
-      filter: sepia(1) hue-rotate(-20deg) brightness(1.1);
-      transform: scale(0.84);
-      transition: opacity 0.22s ease, transform 0.28s ease;
-    }
-
-    .dino-choice-card:hover .choice-bg-fossil { opacity: 0.26; transform: scale(0.86); }
-    .dino-choice-card.selected .choice-bg-fossil { opacity: 0.36; transform: scale(0.88); }
-
-    .choice-content {
+    .choice-top-bar {
       position: relative;
       z-index: 1;
       width: 100%;
-      height: 100%;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
     }
 
     .choice-badge {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 800;
-      letter-spacing: 0.7px;
-      padding: 2px 7px;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
       border-radius: 999px;
-      background: rgba(21, 17, 13, 0.9);
+      background: rgba(21, 17, 13, 0.92);
       border: 1px solid #4a3d30;
       color: var(--text-muted);
+      white-space: nowrap;
     }
 
     .dino-choice-card.selected .choice-badge {
@@ -334,17 +376,52 @@
     .choice-name {
       font-family: 'Cinzel', serif;
       font-weight: 900;
-      font-size: 14.5px;
-      letter-spacing: 0.6px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
       color: #f4f1ea;
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
+    .choice-fossil-stage {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .choice-bg-fossil {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      pointer-events: none;
+      opacity: 0.42;
+      filter: sepia(1) hue-rotate(-20deg) brightness(1.16);
+      transform: scale(1.02);
+      transition: opacity 0.22s ease, transform 0.25s ease;
+    }
+
+    .dino-choice-card:hover .choice-bg-fossil { opacity: 0.58; transform: scale(1.06); }
+    .dino-choice-card.selected .choice-bg-fossil { opacity: 0.72; transform: scale(1.06); }
+
     .choice-role {
+      position: relative;
+      z-index: 1;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
+      font-size: 9.5px;
       color: #c2b6a3;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
+      white-space: nowrap;
     }
 
     .start-controls {
@@ -352,17 +429,25 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
-      padding-bottom: 12px;
+      gap: 14px;
+      padding-bottom: 8px;
     }
 
-    .start-mode-row {
+    .start-options-row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      gap: 12px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       color: var(--text-muted);
+    }
+
+    .start-option-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .start-play-btn {
@@ -415,15 +500,18 @@
 
     .tracker-app.epic-shake { animation: epicShakeApp 0.5s ease-in-out; }
 
+    /* VOLLFLÄCHIGER APEX-HINTERGRUND ÜBER DEN GESAMTEN TRACKER */
     .bg-fossil-layer {
       position: absolute;
       inset: 0;
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.24;
+      opacity: 0.3;
     }
 
     .bg-fossil-layer.is-hidden { display: none; }
@@ -431,6 +519,8 @@
     .fossil-reveal-ghost {
       position: absolute;
       inset: 0;
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -440,19 +530,28 @@
     }
 
     .bg-fossil-img {
-      width: 102%;
-      height: 102%;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
-      transform: translateX(8px) scale(0.92);
-      filter: sepia(1) hue-rotate(-20deg) brightness(1.2);
+      object-position: center;
+      transform: translate(12px, 6px) scale(1.06);
+      filter: sepia(1) hue-rotate(-20deg) brightness(1.22) contrast(1.08);
     }
 
     .bg-fossil-img.trike-bg {
-      transform: translateY(6px) scale(0.92);
+      object-fit: cover;
+      transform: scale(1.12);
     }
 
     .bg-fossil-img.stego-bg {
-      transform: translateY(4px) scale(0.92);
+      object-fit: cover;
+      transform: scale(1.12);
+    }
+
+    .bg-fossil-img.deino-bg {
+      object-fit: contain;
+      object-position: center;
+      transform: translate(8px, 6px) scale(1.04);
     }
 
     .top-bar, .score-card, .grid-header, .buttons-area, .footer-bar {
@@ -469,23 +568,24 @@
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 12px;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .status-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
 
     .status-indicator {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11.5px;
+      font-size: 10.5px;
       font-weight: 700;
-      letter-spacing: 0.7px;
+      letter-spacing: 0.4px;
       color: #5ec985;
     }
 
@@ -495,6 +595,12 @@
       border-radius: 50%;
       background-color: currentColor;
       box-shadow: 0 0 8px currentColor;
+    }
+
+    .top-bar-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .mode-switch {
@@ -510,9 +616,9 @@
       border: none;
       color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 4px 10px;
+      padding: 4px 7px;
       border-radius: 6px;
       cursor: pointer;
     }
@@ -523,8 +629,8 @@
     }
 
     .score-card {
-      background: rgba(16, 12, 9, 0.36);
-      backdrop-filter: blur(2px);
+      background: rgba(16, 12, 9, 0.34);
+      backdrop-filter: blur(1.5px);
       border: 1px solid rgba(74, 61, 48, 0.6);
       border-radius: 12px;
       padding: 12px 15px;
@@ -651,7 +757,7 @@
       border: 1px solid #362c22;
       border-radius: 9px;
       padding: 7px 11px;
-      min-width: 136px;
+      min-width: 146px;
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -683,7 +789,6 @@
     .grid-title { font-weight: 700; color: #b7beb9; letter-spacing: 0.6px; }
     .grid-hint { color: var(--text-muted); font-size: 10px; }
 
-    /* BUTTON-BEREICH OHNE EXTRA RAHMEN ODER BESCHREIBUNG */
     .buttons-area {
       display: flex;
       flex-direction: column;
@@ -967,69 +1072,132 @@
       <!-- STARTMENÜ -->
       <div class="start-menu" id="start-menu">
         <div class="start-header">
-          <svg class="rooted-title-svg" viewBox="0 0 390 104" role="img" aria-label="The Isle Kill Counter">
+          <svg class="rooted-title-svg" viewBox="0 0 430 118" role="img" aria-label="The Isle Apex Kill Counter">
             <defs>
-              <linearGradient id="amberRootGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#fff0bd"/>
-                <stop offset="52%" stop-color="#e3b668"/>
-                <stop offset="100%" stop-color="#9e6d2c"/>
+              <!-- Eingestanzte Knochen-Farbverläufe -->
+              <linearGradient id="carvedBoneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3c3022"/>
+                <stop offset="35%" stop-color="#5a4935"/>
+                <stop offset="78%" stop-color="#756148"/>
+                <stop offset="100%" stop-color="#4e3f2d"/>
               </linearGradient>
+
+              <linearGradient id="carvedApexGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#47331d"/>
+                <stop offset="40%" stop-color="#78562e"/>
+                <stop offset="82%" stop-color="#9c723e"/>
+                <stop offset="100%" stop-color="#593f20"/>
+              </linearGradient>
+
+              <!-- Präge-Filter wie in alten Fossilknochen gestanzt -->
+              <filter id="boneDebossFilter" x="-12%" y="-12%" width="124%" height="128%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.06 0.14" numOctaves="3" seed="17" result="boneGrain"/>
+                <feDisplacementMap in="SourceGraphic" in2="boneGrain" scale="1.4" xChannelSelector="R" yChannelSelector="G" result="weatheredGlyph"/>
+                <feDropShadow dx="0" dy="1.4" stdDeviation="0.4" flood-color="#f2e7cf" flood-opacity="0.34" result="bottomLip"/>
+                <feDropShadow dx="0" dy="-1.4" stdDeviation="0.6" flood-color="#140e09" flood-opacity="0.92" result="topRecess"/>
+                <feMerge>
+                  <feMergeNode in="bottomLip"/>
+                  <feMergeNode in="topRecess"/>
+                  <feMergeNode in="weatheredGlyph"/>
+                </feMerge>
+              </filter>
             </defs>
-            <g fill="none" stroke="#8a683e" stroke-width="1.35" stroke-linecap="round" opacity="0.72">
-              <path d="M98,40 C92,45 88,52 83,58 M92,45 C95,51 98,55 102,58"/>
-              <path d="M195,41 C192,48 189,54 185,59 M195,41 C198,48 201,54 205,59 M195,47 L195,60"/>
-              <path d="M292,40 C298,45 302,52 307,58 M298,45 C295,51 292,55 288,58"/>
-              <path d="M46,84 C39,89 35,95 30,101 M72,85 C69,92 66,97 62,102 M195,86 C192,93 190,98 187,103 M195,86 C198,93 200,98 203,103 M318,85 C321,92 324,97 328,102 M344,84 C351,89 355,95 360,101"/>
-              <path d="M112,12 C108,7 104,5 99,4 M195,12 L195,4 M278,12 C282,7 286,5 291,4"/>
+
+            <!-- Alte Knochen-Wurzeln & Risse -->
+            <g fill="none" stroke="#8f724b" stroke-width="1.25" stroke-linecap="round" opacity="0.58">
+              <path d="M74,35 C67,41 63,48 57,55 M67,41 C71,47 74,52 78,56"/>
+              <path d="M215,36 C211,44 208,50 203,56 M215,36 C219,44 222,50 227,56 M215,43 L215,57"/>
+              <path d="M356,35 C363,41 367,48 373,55 M363,41 C359,47 356,52 352,56"/>
+              <path d="M44,96 C36,102 31,108 26,115 M96,97 C92,105 88,111 83,116 M215,98 C212,106 210,111 207,117 M215,98 C218,106 220,111 223,117 M334,97 C338,105 342,111 347,116 M386,96 C394,102 399,108 404,115"/>
+              <path d="M118,12 C113,7 109,5 103,4 M215,12 L215,4 M312,12 C317,7 321,5 327,4"/>
             </g>
-            <text x="195" y="36" text-anchor="middle" fill="url(#amberRootGrad)" stroke="#3d2914" stroke-width="1.25" font-family="'Cinzel', serif" font-weight="900" font-size="29" letter-spacing="3.5">
-              THE ISLE
-            </text>
-            <text x="195" y="80" text-anchor="middle" fill="url(#amberRootGrad)" stroke="#3d2914" stroke-width="1.25" font-family="'Cinzel', serif" font-weight="900" font-size="27" letter-spacing="2.8">
-              KILL COUNTER
-            </text>
+
+            <!-- Eingestanzte Knochen-Schrift -->
+            <g filter="url(#boneDebossFilter)">
+              <text x="215" y="32" text-anchor="middle" fill="url(#carvedBoneGrad)" stroke="#1e160e" stroke-width="1.15" font-family="'Cinzel', serif" font-weight="900" font-size="25" letter-spacing="3.2">
+                THE ISLE
+              </text>
+              <text x="215" y="61" text-anchor="middle" fill="url(#carvedApexGrad)" stroke="#1e160e" stroke-width="1.2" font-family="'Cinzel', serif" font-weight="900" font-size="26" letter-spacing="4.2">
+                APEX
+              </text>
+              <text x="215" y="92" text-anchor="middle" fill="url(#carvedBoneGrad)" stroke="#1e160e" stroke-width="1.15" font-family="'Cinzel', serif" font-weight="900" font-size="24" letter-spacing="2.6">
+                KILL COUNTER
+              </text>
+            </g>
           </svg>
         </div>
 
-        <div class="dino-choice-grid">
-          <button type="button" class="dino-choice-card selected" id="choice-rex" onclick="selectMenuDino('Rex')">
-            <img src="t-rex_background.png" class="choice-bg-fossil" alt="" aria-hidden="true">
-            <div class="choice-content">
-              <span class="choice-badge">APEX · CARNI</span>
-              <span class="choice-name">T-REX</span>
-              <span class="choice-role">Jäger &amp; Ambush</span>
-            </div>
-          </button>
+        <div class="menu-groups-wrap">
+          <div class="dino-choice-row">
+            <button type="button" class="dino-choice-card selected" id="choice-rex" onclick="selectMenuDino('Rex')">
+              <div class="choice-top-bar">
+                <span class="choice-name">T-REX</span>
+                <span class="choice-badge" data-i18n="badgeApexCarni">APEX · CARNI</span>
+              </div>
+              <div class="choice-fossil-stage">
+                <img src="t-rex_background.png" class="choice-bg-fossil" alt="" aria-hidden="true">
+              </div>
+              <span class="choice-role" data-i18n="roleRex">Jäger &amp; Ambush</span>
+            </button>
 
-          <button type="button" class="dino-choice-card" id="choice-trike" onclick="selectMenuDino('Trike')">
-            <img src="trike_background.png" class="choice-bg-fossil trike-choice-bg" alt="" aria-hidden="true">
-            <div class="choice-content">
-              <span class="choice-badge">APEX · HERBI</span>
-              <span class="choice-name">TRICERATOPS</span>
-              <span class="choice-role">Horde &amp; Tank</span>
-            </div>
-          </button>
+            <button type="button" class="dino-choice-card" id="choice-deino" onclick="selectMenuDino('Deino')">
+              <div class="choice-top-bar">
+                <span class="choice-name">DEINO</span>
+                <span class="choice-badge" data-i18n="badgeApexCarni">APEX · CARNI</span>
+              </div>
+              <div class="choice-fossil-stage">
+                <img src="deino_background.png" class="choice-bg-fossil deino-choice-bg" alt="" aria-hidden="true">
+              </div>
+              <span class="choice-role" data-i18n="roleDeino">Fluss &amp; Hinterhalt</span>
+            </button>
+          </div>
 
-          <button type="button" class="dino-choice-card" id="choice-stego" onclick="selectMenuDino('Stego')">
-            <img src="stego_background.png" class="choice-bg-fossil stego-choice-bg" alt="" aria-hidden="true">
-            <div class="choice-content">
-              <span class="choice-badge">HEAVY · HERBI</span>
-              <span class="choice-name">STEGOSAURUS</span>
-              <span class="choice-role">Thagomizer &amp; Wall</span>
-            </div>
-          </button>
+          <div class="dino-choice-row">
+            <button type="button" class="dino-choice-card" id="choice-trike" onclick="selectMenuDino('Trike')">
+              <div class="choice-top-bar">
+                <span class="choice-name">TRIKE</span>
+                <span class="choice-badge" data-i18n="badgeApexHerbi">APEX · HERBI</span>
+              </div>
+              <div class="choice-fossil-stage">
+                <img src="trike_background.png" class="choice-bg-fossil trike-choice-bg" alt="" aria-hidden="true">
+              </div>
+              <span class="choice-role" data-i18n="roleTrike">Horde &amp; Tank</span>
+            </button>
+
+            <button type="button" class="dino-choice-card" id="choice-stego" onclick="selectMenuDino('Stego')">
+              <div class="choice-top-bar">
+                <span class="choice-name">STEGO</span>
+                <span class="choice-badge" data-i18n="badgeHeavyHerbi">HEAVY · HERBI</span>
+              </div>
+              <div class="choice-fossil-stage">
+                <img src="stego_background.png" class="choice-bg-fossil stego-choice-bg" alt="" aria-hidden="true">
+              </div>
+              <span class="choice-role" data-i18n="roleStego">Thagomizer &amp; Wall</span>
+            </button>
+          </div>
         </div>
 
         <div class="start-controls">
-          <div class="start-mode-row">
-            <span>MODUS:</span>
-            <div class="mode-switch">
-              <button type="button" class="mode-btn" id="menu-btn-solo" onclick="setGameMode('solo')">Solo</button>
-              <button type="button" class="mode-btn active" id="menu-btn-duo" onclick="setGameMode('duo')">Duo</button>
+          <div class="start-options-row">
+            <div class="start-option-group">
+              <span data-i18n="modeLabel">MODUS:</span>
+              <div class="mode-switch">
+                <button type="button" class="mode-btn" id="menu-btn-solo" onclick="setGameMode('solo')" data-i18n="solo">Solo</button>
+                <button type="button" class="mode-btn active" id="menu-btn-duo" onclick="setGameMode('duo')" data-i18n="duo">Duo</button>
+                <button type="button" class="mode-btn" id="menu-btn-trio" onclick="setGameMode('trio')" data-i18n="trio">Trio</button>
+              </div>
+            </div>
+
+            <div class="start-option-group">
+              <span data-i18n="langLabel">SPRACHE:</span>
+              <div class="mode-switch">
+                <button type="button" class="mode-btn active" id="menu-lang-de" onclick="setLanguage('de')">DE</button>
+                <button type="button" class="mode-btn" id="menu-lang-en" onclick="setLanguage('en')">EN</button>
+              </div>
             </div>
           </div>
 
-          <button type="button" class="start-play-btn" onclick="enterTracker()">JAGD STARTEN</button>
+          <button type="button" class="start-play-btn" onclick="enterTracker()" data-i18n="startHunt">JAGD STARTEN</button>
         </div>
       </div>
 
@@ -1037,15 +1205,22 @@
       <div class="tracker-view is-hidden" id="tracker-view">
         <div class="top-bar">
           <div class="status-left">
-            <button type="button" class="menu-back-btn" onclick="openStartMenu()" title="Zurück zur Dino-Auswahl">MENÜ</button>
+            <button type="button" class="menu-back-btn" onclick="openStartMenu()" data-i18n-title="menuBtnTitle" data-i18n="menuBtn">MENÜ</button>
             <div class="status-indicator">
               <span class="status-dot"></span>
               <span id="mode-label">WIDGET-MODUS (DUO)</span>
             </div>
           </div>
-          <div class="mode-switch">
-            <button class="mode-btn" id="btn-solo" onclick="setGameMode('solo')">Solo</button>
-            <button class="mode-btn active" id="btn-duo" onclick="setGameMode('duo')">Duo</button>
+          <div class="top-bar-controls">
+            <div class="mode-switch" title="Language / Sprache">
+              <button class="mode-btn active" id="lang-de" onclick="setLanguage('de')">DE</button>
+              <button class="mode-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
+            </div>
+            <div class="mode-switch">
+              <button class="mode-btn" id="btn-solo" onclick="setGameMode('solo')" data-i18n="solo">Solo</button>
+              <button class="mode-btn active" id="btn-duo" onclick="setGameMode('duo')" data-i18n="duo">Duo</button>
+              <button class="mode-btn" id="btn-trio" onclick="setGameMode('trio')" data-i18n="trio">Trio</button>
+            </div>
           </div>
         </div>
 
@@ -1058,8 +1233,8 @@
                 </svg>
               </div>
               <div class="duo-title-wrap">
-                <span class="duo-title" id="duo-title" contenteditable="true" spellcheck="false" title="Klicken zum Bearbeiten">Name &amp; Name</span>
-                <button class="edit-name-btn" onclick="focusDuoTitle()" title="Namen bearbeiten">
+                <span class="duo-title" id="duo-title" contenteditable="true" spellcheck="false" data-i18n-title="editNameTitle">Name &amp; Name</span>
+                <button class="edit-name-btn" onclick="focusDuoTitle()" data-i18n-title="editNameBtnTitle">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 20h9"></path>
                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
@@ -1068,10 +1243,11 @@
               </div>
             </div>
             <div>
-              <select class="player-dino-select" id="player-dino" onchange="changePlayerDino(this.value)" title="Gespielten Dino wählen">
-                <option value="Rex">Als: Rex</option>
-                <option value="Trike">Als: Trike</option>
-                <option value="Stego">Als: Stego</option>
+              <select class="player-dino-select" id="player-dino" onchange="changePlayerDino(this.value)" data-i18n-title="selectDinoTitle">
+                <option value="Rex" data-i18n="asRex">Als: Rex</option>
+                <option value="Deino" data-i18n="asDeino">Als: Deino</option>
+                <option value="Trike" data-i18n="asTrike">Als: Trike</option>
+                <option value="Stego" data-i18n="asStego">Als: Stego</option>
               </select>
             </div>
           </div>
@@ -1084,15 +1260,15 @@
 
             <div class="tier-box">
               <div class="tier-row">
-                <span class="tier-name dot-carni">● FLEISCHI</span>
+                <span class="tier-name dot-carni" data-i18n="carniLabel">● CARNIVORE</span>
                 <span class="tier-val" id="count-carni">0</span>
               </div>
               <div class="tier-row">
-                <span class="tier-name dot-herbi">● PFLANZI</span>
+                <span class="tier-name dot-herbi" data-i18n="herbiLabel">● HERBIVORE</span>
                 <span class="tier-val" id="count-herbi">0</span>
               </div>
               <div class="tier-row">
-                <span class="tier-name dot-snack">● SNACK</span>
+                <span class="tier-name dot-snack" data-i18n="snackLabel">● SNACK</span>
                 <span class="tier-val" id="count-snack">0</span>
               </div>
             </div>
@@ -1100,8 +1276,8 @@
         </div>
 
         <div class="grid-header">
-          <span class="grid-title">BEUTE ANTIPPEN (+1 KILL)</span>
-          <span class="grid-hint">Rechtsklick: -1 · [Z]: Undo</span>
+          <span class="grid-title" data-i18n="gridTitle">BEUTE ANTIPPEN (+1 KILL)</span>
+          <span class="grid-hint" data-i18n="gridHint">Rechtsklick: -1 · [Z]: Undo</span>
         </div>
 
         <div class="buttons-area" id="buttons-area"></div>
@@ -1111,7 +1287,7 @@
             <div class="log-line feed-0">Bereit für die Jagd...</div>
           </div>
           <div class="footer-actions">
-            <button class="circle-btn copy-btn" onclick="copyDinoList()" title="Kill-Liste für Discord kopieren">
+            <button class="circle-btn copy-btn" onclick="copyDinoList()" data-i18n-title="copyTitle">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
@@ -1119,19 +1295,19 @@
                 <line x1="16" y1="17" x2="8" y2="17"></line>
               </svg>
             </button>
-            <button class="circle-btn" onclick="undoLast()" title="Rückgängig [Z]">
+            <button class="circle-btn" onclick="undoLast()" data-i18n-title="undoTitle">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
               </svg>
             </button>
-            <button class="circle-btn sound-active" id="sound-btn" onclick="toggleSound()" title="Sound umschalten">
+            <button class="circle-btn sound-active" id="sound-btn" onclick="toggleSound()" data-i18n-title="soundTitle">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                 <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
               </svg>
             </button>
-            <button class="circle-btn reset-btn" onclick="resetTracker()" title="Alle Kills zurücksetzen">
+            <button class="circle-btn reset-btn" onclick="resetTracker()" data-i18n-title="resetTitle">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <polyline points="23 4 23 10 17 10"></polyline>
                 <polyline points="1 20 1 14 7 14"></polyline>
@@ -1146,30 +1322,207 @@
 </div>
 
 <script>
+  const APP_WINDOW_SIZE = { width: 605, height: 998 };
+
+  function setupPwaManifest() {
+    try {
+      const manifestData = {
+        name: 'The Isle Apex Kill Counter',
+        short_name: 'Apex Kill Counter',
+        start_url: '.',
+        display: 'standalone',
+        background_color: '#16110d',
+        theme_color: '#16110d',
+        window_size: APP_WINDOW_SIZE
+      };
+      const blob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
+      const url = URL.createObjectURL(blob);
+      const linkEl = document.getElementById('pwa-manifest');
+      if (linkEl && window.location.protocol === 'file:') {
+        linkEl.href = url;
+      }
+    } catch {}
+  }
+
+  const I18N = {
+    de: {
+      modeLabel: 'MODUS:',
+      langLabel: 'SPRACHE:',
+      solo: 'Solo',
+      duo: 'Duo',
+      trio: 'Trio',
+      startHunt: 'JAGD STARTEN',
+      menuBtn: 'MENÜ',
+      menuBtnTitle: 'Zurück zur Dino-Auswahl',
+      widgetMode: (mode) => `WIDGET-MODUS (${mode.toUpperCase()})`,
+      soloKills: 'SOLO KILLS',
+      sharedKills: 'GEMEINSAME KILLS',
+      trioKills: 'GEMEINSAME TRIO-KILLS',
+      carniLabel: '● CARNIVORE',
+      herbiLabel: '● HERBIVORE',
+      snackLabel: '● SNACK',
+      gridTitle: 'BEUTE ANTIPPEN (+1 KILL)',
+      gridHint: 'Rechtsklick: -1 · [Z]: Undo',
+      badgeApexCarni: 'APEX · CARNI',
+      badgeApexHerbi: 'APEX · HERBI',
+      badgeHeavyHerbi: 'HEAVY · HERBI',
+      roleRex: 'Jäger & Ambush',
+      roleDeino: 'Fluss & Hinterhalt',
+      roleTrike: 'Horde & Tank',
+      roleStego: 'Thagomizer & Wall',
+      asRex: 'Als: Rex',
+      asDeino: 'Als: Deino',
+      asTrike: 'Als: Trike',
+      asStego: 'Als: Stego',
+      defaultDuoTitle: 'Name & Name',
+      defaultSoloTitle: 'Name',
+      defaultTrioTitle: 'Name, Name & Name',
+      readyLog: 'Bereit für die Jagd...',
+      startedLog: (dino, mode) => `Gestartet als ${dino} (${mode.toUpperCase()})`,
+      playedDinoLog: (dino) => `Gespielter Dino: ${dino}`,
+      modeSwitchedLog: (mode) => `Modus gewechselt: ${mode.toUpperCase()}`,
+      milestoneLog: (val, name) => `🦖 MEILENSTEIN! ${val}x ${name} erlegt!`,
+      plusKillLog: (name) => `+1 ${name} erlegt!`,
+      minusKillLog: (name) => `-1 ${name} korrigiert`,
+      undoLog: (name) => `Rückgängig: ${name}`,
+      resetLog: 'Tracker zurückgesetzt.',
+      copiedLog: 'Kill-Liste kopiert! [Strg+V bereit]',
+      copyFailLog: 'Kopieren fehlgeschlagen.',
+      clipboardBlockedLog: 'Browser blockiert Zwischenablage.',
+      btnTitle: (name) => `${name} (+1 Kill / Rechtsklick -1)`,
+      editNameTitle: 'Klicken zum Bearbeiten',
+      editNameBtnTitle: 'Namen bearbeiten',
+      selectDinoTitle: 'Gespielten Dino wählen',
+      copyTitle: 'Kill-Liste für Discord kopieren',
+      undoTitle: 'Rückgängig [Z]',
+      soundTitle: 'Sound umschalten',
+      resetTitle: 'Alle Kills zurücksetzen',
+      discordTitle: (mode, name, dino) => {
+        const modeText = mode === 'solo' ? 'Solo' : (mode === 'trio' ? 'Trio' : 'Duo');
+        return `${modeText} [${name}] — Gespielt als: ${dino}`;
+      },
+      discordTotalLabel: (mode) => mode === 'solo' ? 'Solo Kills' : (mode === 'trio' ? 'Gemeinsame Trio-Kills' : 'Gemeinsame Kills'),
+      discordNoKills: '• Noch keine Kills verzeichnet',
+      targets: {
+        tyrannosaurus: 'Tyrannosaurus',
+        deinosuchus: 'Deinosuchus',
+        allosaurus: 'Allosaurus',
+        ceratosaurus: 'Ceratosaurus',
+        dilophosaurus: 'Dilophosaurus',
+        carnotaurus: 'Carnotaurus',
+        omniraptor: 'Omniraptor',
+        triceratops: 'Triceratops',
+        stegosaurus: 'Stegosaurus',
+        kentrosaurus: 'Kentrosaurus',
+        diabloceratops: 'Diabloceratops',
+        maiasaura: 'Maiasaura',
+        tenontosaurus: 'Tenontosaurus',
+        pachy: 'Pachy',
+        snack: 'Snack'
+      }
+    },
+    en: {
+      modeLabel: 'MODE:',
+      langLabel: 'LANGUAGE:',
+      solo: 'Solo',
+      duo: 'Duo',
+      trio: 'Trio',
+      startHunt: 'START HUNT',
+      menuBtn: 'MENU',
+      menuBtnTitle: 'Back to dino selection',
+      widgetMode: (mode) => `WIDGET MODE (${mode.toUpperCase()})`,
+      soloKills: 'SOLO KILLS',
+      sharedKills: 'SHARED KILLS',
+      trioKills: 'SHARED TRIO KILLS',
+      carniLabel: '● CARNIVORE',
+      herbiLabel: '● HERBIVORE',
+      snackLabel: '● SNACK',
+      gridTitle: 'TAP PREY (+1 KILL)',
+      gridHint: 'Right-click: -1 · [Z]: Undo',
+      badgeApexCarni: 'APEX · CARNI',
+      badgeApexHerbi: 'APEX · HERBI',
+      badgeHeavyHerbi: 'HEAVY · HERBI',
+      roleRex: 'Hunter & Ambush',
+      roleDeino: 'River & Ambush',
+      roleTrike: 'Horde & Tank',
+      roleStego: 'Thagomizer & Wall',
+      asRex: 'As: Rex',
+      asDeino: 'As: Deino',
+      asTrike: 'As: Trike',
+      asStego: 'As: Stego',
+      defaultDuoTitle: 'Name & Name',
+      defaultSoloTitle: 'Name',
+      defaultTrioTitle: 'Name, Name & Name',
+      readyLog: 'Ready for the hunt...',
+      startedLog: (dino, mode) => `Started as ${dino} (${mode.toUpperCase()})`,
+      playedDinoLog: (dino) => `Played dino: ${dino}`,
+      modeSwitchedLog: (mode) => `Mode switched: ${mode.toUpperCase()}`,
+      milestoneLog: (val, name) => `🦖 MILESTONE! ${val}x ${name} slain!`,
+      plusKillLog: (name) => `+1 ${name} slain!`,
+      minusKillLog: (name) => `-1 ${name} corrected`,
+      undoLog: (name) => `Undid: ${name}`,
+      resetLog: 'Tracker reset.',
+      copiedLog: 'Kill list copied! [Ctrl+V ready]',
+      copyFailLog: 'Copy failed.',
+      clipboardBlockedLog: 'Browser blocked clipboard.',
+      btnTitle: (name) => `${name} (+1 Kill / Right-click -1)`,
+      editNameTitle: 'Click to edit',
+      editNameBtnTitle: 'Edit name',
+      selectDinoTitle: 'Select played dino',
+      copyTitle: 'Copy kill list for Discord',
+      undoTitle: 'Undo [Z]',
+      soundTitle: 'Toggle sound',
+      resetTitle: 'Reset all kills',
+      discordTitle: (mode, name, dino) => {
+        const modeText = mode === 'solo' ? 'Solo' : (mode === 'trio' ? 'Trio' : 'Duo');
+        return `${modeText} [${name}] — Played as: ${dino}`;
+      },
+      discordTotalLabel: (mode) => mode === 'solo' ? 'Solo Kills' : (mode === 'trio' ? 'Shared Trio Kills' : 'Shared Kills'),
+      discordNoKills: '• No kills recorded yet',
+      targets: {
+        tyrannosaurus: 'Tyrannosaurus',
+        deinosuchus: 'Deinosuchus',
+        allosaurus: 'Allosaurus',
+        ceratosaurus: 'Ceratosaurus',
+        dilophosaurus: 'Dilophosaurus',
+        carnotaurus: 'Carnotaurus',
+        omniraptor: 'Omniraptor',
+        triceratops: 'Triceratops',
+        stegosaurus: 'Stegosaurus',
+        kentrosaurus: 'Kentrosaurus',
+        diabloceratops: 'Diabloceratops',
+        maiasaura: 'Maiasaura',
+        tenontosaurus: 'Tenontosaurus',
+        pachy: 'Pachy',
+        snack: 'Snack'
+      }
+    }
+  };
+
   const FLEISCHI = [
-    { id: 'tyrannosaurus', name: 'Tyrannosaurus', short: 'Rex',   skull: 't-rex_skull.png', color: '#ff8a8a' },
-    { id: 'deinosuchus',   name: 'Deinosuchus',   short: 'Deino', skull: 'deino_skull.png', color: '#70c1ff' },
-    { id: 'allosaurus',    name: 'Allosaurus',    short: 'Allo',  skull: 'Allo_skull.png',  color: '#ffcc80' },
-    { id: 'ceratosaurus',  name: 'Ceratosaurus',  short: 'Cera',  skull: 'cera_skull.png',  color: '#ff9e7d' },
-    { id: 'dilophosaurus', name: 'Dilophosaurus', short: 'Dilo',  skull: 'dilo_skull.png',  color: '#ccff48' },
-    { id: 'carnotaurus',   name: 'Carnotaurus',   short: 'Carno', skull: 'carno_skull.png', color: '#ffa05c' },
-    { id: 'omniraptor',    name: 'Omniraptor',    short: 'Omni',  skull: 'omni_skull.png',  color: '#c784ff' }
+    { id: 'tyrannosaurus', short: 'Rex',   skull: 't-rex_skull.png', color: '#ff8a8a' },
+    { id: 'deinosuchus',   short: 'Deino', skull: 'deino_skull.png', color: '#70c1ff' },
+    { id: 'allosaurus',    short: 'Allo',  skull: 'Allo_skull.png',  color: '#ffcc80' },
+    { id: 'ceratosaurus',  short: 'Cera',  skull: 'cera_skull.png',  color: '#ff9e7d' },
+    { id: 'dilophosaurus', short: 'Dilo',  skull: 'dilo_skull.png',  color: '#ccff48' },
+    { id: 'carnotaurus',   short: 'Carno', skull: 'carno_skull.png', color: '#ffa05c' },
+    { id: 'omniraptor',    short: 'Omni',  skull: 'omni_skull.png',  color: '#c784ff' }
   ];
 
   const PFLANZI = [
-    { id: 'triceratops',   name: 'Triceratops',   short: 'Trike',  skull: 'trike_skull.png', color: '#ffd25a' },
-    { id: 'stegosaurus',   name: 'Stegosaurus',   short: 'Stego',  skull: 'stego_skull.png', color: '#73e2a7' },
-    { id: 'kentrosaurus',  name: 'Kentrosaurus',  short: 'Kentro', skull: 'kentro_skull.png',color: '#8ce99a', isKentro: true },
-    { id: 'diabloceratops',name: 'Diabloceratops',short: 'Diablo', skull: 'trike_skull.png', color: '#b5ff48' },
-    { id: 'maiasaura',     name: 'Maiasaura',     short: 'Maia',   skull: 'maia_skull.png',  color: '#6eb5ff' },
-    { id: 'tenontosaurus', name: 'Tenontosaurus', short: 'Teno',   skull: 'teno_skull.png',  color: '#84e6ff' },
-    { id: 'pachy',         name: 'Pachy',         short: 'Pachy',  skull: 'pachy_skull.png', color: '#ffe066' }
+    { id: 'triceratops',   short: 'Trike',  skull: 'trike_skull.png', color: '#ffd25a' },
+    { id: 'stegosaurus',   short: 'Stego',  skull: 'stego_skull.png', color: '#73e2a7' },
+    { id: 'kentrosaurus',  short: 'Kentro', skull: 'kentro_skull.png',color: '#8ce99a', isKentro: true },
+    { id: 'diabloceratops',short: 'Diablo', skull: 'trike_skull.png', color: '#b5ff48' },
+    { id: 'maiasaura',     short: 'Maia',   skull: 'maia_skull.png',  color: '#6eb5ff' },
+    { id: 'tenontosaurus', short: 'Teno',   skull: 'teno_skull.png',  color: '#84e6ff' },
+    { id: 'pachy',         short: 'Pachy',  skull: 'pachy_skull.png', color: '#ffe066' }
   ];
 
   const ALL_TARGETS = [
     ...FLEISCHI.map(d => ({ ...d, group: 'carni' })),
     ...PFLANZI.map(d => ({ ...d, group: 'herbi' })),
-    { id: 'snack', name: 'Snack', short: 'Snack', skull: 'snack.png', color: '#ffd25a', group: 'snack' }
+    { id: 'snack', short: 'Snack', skull: 'snack.png', color: '#ffd25a', group: 'snack' }
   ];
 
   const GROUP_DOTS = {
@@ -1179,6 +1532,7 @@
   };
 
   let state = {
+    lang: 'de',
     mode: 'duo',
     playerDino: 'Rex',
     kills: {},
@@ -1186,11 +1540,87 @@
     sound: true,
     duoTitle: 'Name & Name',
     soloTitle: 'Name',
-    feedLogs: ['Bereit für die Jagd...'],
+    trioTitle: 'Name, Name & Name',
+    feedLogs: [I18N.de.readyLog],
     feedIsMilestone: [false]
   };
 
   ALL_TARGETS.forEach(d => state.kills[d.id] = 0);
+
+  function t() {
+    return I18N[state.lang] || I18N.de;
+  }
+
+  function getTargetName(id) {
+    return t().targets[id] || id;
+  }
+
+  function getTotalLabelForMode(mode, dict) {
+    if (mode === 'solo') return dict.soloKills;
+    if (mode === 'trio') return dict.trioKills;
+    return dict.sharedKills;
+  }
+
+  function getTitleForMode(mode) {
+    const dict = t();
+    if (mode === 'solo') return state.soloTitle;
+    if (mode === 'trio') return state.trioTitle;
+    return state.duoTitle;
+  }
+
+  function applyLanguage(lang) {
+    const prevDict = t();
+    const prevLang = state.lang;
+    state.lang = lang === 'en' ? 'en' : 'de';
+    document.documentElement.lang = state.lang;
+
+    document.getElementById('lang-de')?.classList.toggle('active', state.lang === 'de');
+    document.getElementById('lang-en')?.classList.toggle('active', state.lang === 'en');
+    document.getElementById('menu-lang-de')?.classList.toggle('active', state.lang === 'de');
+    document.getElementById('menu-lang-en')?.classList.toggle('active', state.lang === 'en');
+
+    const dict = t();
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key]) el.textContent = dict[key];
+    });
+
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.getAttribute('data-i18n-title');
+      if (typeof dict[key] === 'string') el.title = dict[key];
+    });
+
+    if (state.duoTitle === prevDict.defaultDuoTitle) {
+      state.duoTitle = dict.defaultDuoTitle;
+    }
+    if (state.soloTitle === prevDict.defaultSoloTitle) {
+      state.soloTitle = dict.defaultSoloTitle;
+    }
+    if (state.trioTitle === prevDict.defaultTrioTitle) {
+      state.trioTitle = dict.defaultTrioTitle;
+    }
+
+    if (state.feedLogs.length === 1 && state.feedLogs[0] === prevDict.readyLog) {
+      state.feedLogs = [dict.readyLog];
+      renderKillfeed();
+    }
+
+    document.getElementById('mode-label').textContent = dict.widgetMode(state.mode);
+    document.getElementById('total-label').textContent = getTotalLabelForMode(state.mode, dict);
+
+    ALL_TARGETS.forEach(item => {
+      const btn = document.getElementById(`btn-${item.id}`);
+      if (btn) btn.title = dict.btnTitle(getTargetName(item.id));
+    });
+
+    updateUI();
+    if (prevLang !== state.lang && state.sound) playClickSound(500);
+  }
+
+  function setLanguage(lang) {
+    applyLanguage(lang);
+  }
 
   function renderFramePattern(dinoType) {
     const layer = document.getElementById('frame-pattern-layer');
@@ -1242,9 +1672,10 @@
   }
 
   function getSettledBgTransform(dino) {
-    if (dino === 'Trike') return 'translateY(6px) scale(0.92)';
-    if (dino === 'Stego') return 'translateY(4px) scale(0.92)';
-    return 'translateX(8px) scale(0.92)';
+    if (dino === 'Trike') return 'scale(1.12)';
+    if (dino === 'Stego') return 'scale(1.12)';
+    if (dino === 'Deino') return 'translate(8px, 6px) scale(1.04)';
+    return 'translate(12px, 6px) scale(1.06)';
   }
 
   function syncDinoVisuals(dino, withHuntEntrance = false) {
@@ -1255,11 +1686,12 @@
 
     if (selectEl) selectEl.value = dino;
     document.getElementById('choice-rex')?.classList.toggle('selected', dino === 'Rex');
+    document.getElementById('choice-deino')?.classList.toggle('selected', dino === 'Deino');
     document.getElementById('choice-trike')?.classList.toggle('selected', dino === 'Trike');
     document.getElementById('choice-stego')?.classList.toggle('selected', dino === 'Stego');
 
-    bgImg.classList.remove('trike-bg', 'stego-bg');
-    ghostImg.classList.remove('trike-bg', 'stego-bg');
+    bgImg.classList.remove('trike-bg', 'stego-bg', 'deino-bg');
+    ghostImg.classList.remove('trike-bg', 'stego-bg', 'deino-bg');
 
     if (dino === 'Trike') {
       bgImg.src = 'trike_background.png';
@@ -1271,6 +1703,11 @@
       bgImg.classList.add('stego-bg');
       ghostImg.src = 'stego_background.png';
       ghostImg.classList.add('stego-bg');
+    } else if (dino === 'Deino') {
+      bgImg.src = 'deino_background.png';
+      bgImg.classList.add('deino-bg');
+      ghostImg.src = 'deino_background.png';
+      ghostImg.classList.add('deino-bg');
     } else {
       bgImg.src = 't-rex_background.png';
       ghostImg.src = 't-rex_background.png';
@@ -1290,7 +1727,7 @@
     document.getElementById('tracker-view').classList.remove('is-hidden');
     document.getElementById('bg-fossil').classList.remove('is-hidden');
     syncDinoVisuals(state.playerDino, true);
-    pushLog(`Gestartet als ${state.playerDino} (${state.mode.toUpperCase()})`, false);
+    pushLog(t().startedLog(state.playerDino, state.mode), false);
     if (state.sound) playClickSound(580);
   }
 
@@ -1309,6 +1746,8 @@
     const bgLayer = document.getElementById('bg-fossil');
     const trackerView = document.getElementById('tracker-view');
     const settledTransform = getSettledBgTransform(dino);
+    const ghostPeakTransform = dino === 'Deino' ? 'translate(8px, 6px) scale(1.08)' : 'scale(1.1)';
+    const ghostStartTransform = dino === 'Deino' ? 'translate(8px, 6px) scale(1.14)' : 'scale(1.16)';
 
     if (ghostAnim) ghostAnim.cancel();
     if (bgAnim) bgAnim.cancel();
@@ -1316,7 +1755,7 @@
 
     if (bgLayer?.animate) {
       bgAnim = bgLayer.animate(
-        [{ opacity: 0 }, { opacity: 0, offset: 0.72 }, { opacity: 0.24 }],
+        [{ opacity: 0 }, { opacity: 0, offset: 0.72 }, { opacity: 0.3 }],
         { duration: 1350, easing: 'ease-out', fill: 'forwards' }
       );
     }
@@ -1329,9 +1768,9 @@
     if (ghost?.animate) {
       ghostAnim = ghost.animate(
         [
-          { opacity: 0, transform: 'scale(1.14)' },
-          { opacity: 0.88, transform: 'scale(1.06)', offset: 0.45 },
-          { opacity: 0.88, transform: 'scale(1.06)', offset: 0.65 },
+          { opacity: 0, transform: ghostStartTransform },
+          { opacity: 0.88, transform: ghostPeakTransform, offset: 0.45 },
+          { opacity: 0.88, transform: ghostPeakTransform, offset: 0.65 },
           { opacity: 0, transform: settledTransform }
         ],
         { duration: 1350, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
@@ -1341,24 +1780,31 @@
 
   function changePlayerDino(dino) {
     syncDinoVisuals(dino, true);
-    pushLog(`Gespielter Dino: ${dino}`, false);
+    pushLog(t().playedDinoLog(dino), false);
     if (state.sound) playClickSound(440);
   }
 
   function setGameMode(mode) {
+    const validMode = ['solo', 'duo', 'trio'].includes(mode) ? mode : 'duo';
+    const dict = t();
     const titleEl = document.getElementById('duo-title');
-    if (state.mode === 'duo') state.duoTitle = titleEl.textContent.trim() || 'Name & Name';
-    else state.soloTitle = titleEl.textContent.trim() || 'Name';
+    const currentText = titleEl.textContent.trim();
 
-    state.mode = mode;
-    document.getElementById('btn-solo').classList.toggle('active', mode === 'solo');
-    document.getElementById('btn-duo').classList.toggle('active', mode === 'duo');
-    document.getElementById('menu-btn-solo')?.classList.toggle('active', mode === 'solo');
-    document.getElementById('menu-btn-duo')?.classList.toggle('active', mode === 'duo');
-    document.getElementById('mode-label').textContent = `WIDGET-MODUS (${mode.toUpperCase()})`;
-    document.getElementById('total-label').textContent = mode === 'solo' ? 'SOLO KILLS' : 'GEMEINSAME KILLS';
-    titleEl.textContent = mode === 'solo' ? state.soloTitle : state.duoTitle;
-    pushLog(`Modus gewechselt: ${mode.toUpperCase()}`, false);
+    if (state.mode === 'solo') state.soloTitle = currentText || dict.defaultSoloTitle;
+    else if (state.mode === 'trio') state.trioTitle = currentText || dict.defaultTrioTitle;
+    else state.duoTitle = currentText || dict.defaultDuoTitle;
+
+    state.mode = validMode;
+
+    ['solo', 'duo', 'trio'].forEach(m => {
+      document.getElementById(`btn-${m}`)?.classList.toggle('active', validMode === m);
+      document.getElementById(`menu-btn-${m}`)?.classList.toggle('active', validMode === m);
+    });
+
+    document.getElementById('mode-label').textContent = dict.widgetMode(validMode);
+    document.getElementById('total-label').textContent = getTotalLabelForMode(validMode, dict);
+    titleEl.textContent = getTitleForMode(validMode);
+    pushLog(dict.modeSwitchedLog(validMode), false);
   }
 
   function setupTitleEditor() {
@@ -1367,12 +1813,16 @@
       if (e.key === 'Enter') { e.preventDefault(); titleEl.blur(); }
     });
     titleEl.addEventListener('blur', () => {
+      const dict = t();
       const cleanName = titleEl.textContent.trim().replace(/\s+/g, ' ');
       if (state.mode === 'solo') {
-        state.soloTitle = cleanName || 'Name';
+        state.soloTitle = cleanName || dict.defaultSoloTitle;
         titleEl.textContent = state.soloTitle;
+      } else if (state.mode === 'trio') {
+        state.trioTitle = cleanName || dict.defaultTrioTitle;
+        titleEl.textContent = state.trioTitle;
       } else {
-        state.duoTitle = cleanName || 'Name & Name';
+        state.duoTitle = cleanName || dict.defaultDuoTitle;
         titleEl.textContent = state.duoTitle;
       }
     });
@@ -1390,20 +1840,21 @@
 
   function createAmberButton(item, group, isSnack = false) {
     const btn = document.createElement('button');
+    const displayName = getTargetName(item.id);
     btn.className = 'dino-btn';
     btn.id = `btn-${item.id}`;
-    btn.title = `${item.name} (+1 Kill / Rechtsklick -1)`;
+    btn.title = t().btnTitle(displayName);
 
     let contentHtml = '';
     if (isSnack) {
       contentHtml = `
-        <img src="${item.skull}" class="fossil-img-snack" alt="Snack" onerror="this.classList.add('is-missing')">
+        <img src="${item.skull}" class="fossil-img-snack" alt="${displayName}" onerror="this.classList.add('is-missing')">
         <span class="dino-short-fallback" style="color:${item.color}">${item.short}</span>
       `;
     } else if (item.skull) {
       const imgCls = item.isKentro ? 'fossil-img-kentro' : 'fossil-img';
       contentHtml = `
-        <img src="${item.skull}" class="${imgCls}" alt="${item.name}" onerror="this.classList.add('is-missing')">
+        <img src="${item.skull}" class="${imgCls}" alt="${displayName}" onerror="this.classList.add('is-missing')">
         <span class="dino-short-fallback" style="color:${item.color}">${item.short}</span>
       `;
     } else {
@@ -1429,7 +1880,6 @@
     const area = document.getElementById('buttons-area');
     area.innerHTML = '';
 
-    // Fleischi: erste 4 in 4er-Reihe, Dilo/Carno/Omni mittig in 3er-Reihe
     const carniTop = document.createElement('div');
     carniTop.className = 'dino-grid-4';
     FLEISCHI.slice(0, 4).forEach(d => carniTop.appendChild(createAmberButton(d, 'carni', false)));
@@ -1440,7 +1890,6 @@
     FLEISCHI.slice(4).forEach(d => carniMid.appendChild(createAmberButton(d, 'carni', false)));
     area.appendChild(carniMid);
 
-    // Pflanzi: erste 4 in 4er-Reihe, Maia/Teno/Pachy mittig in 3er-Reihe
     const herbiTop = document.createElement('div');
     herbiTop.className = 'dino-grid-4';
     PFLANZI.slice(0, 4).forEach(d => herbiTop.appendChild(createAmberButton(d, 'herbi', false)));
@@ -1451,7 +1900,6 @@
     PFLANZI.slice(4).forEach(d => herbiMid.appendChild(createAmberButton(d, 'herbi', false)));
     area.appendChild(herbiMid);
 
-    // Snack mittig darunter
     const snackRow = document.createElement('div');
     snackRow.className = 'snack-row';
     const snackSlot = document.createElement('div');
@@ -1505,19 +1953,19 @@
     state.kills[targetId] = newVal;
     state.history.push({ dinoId: targetId, delta });
 
-    const target = ALL_TARGETS.find(d => d.id === targetId);
-    const label = target.name;
+    const dict = t();
+    const label = getTargetName(targetId);
 
     if (delta > 0) {
       if (newVal > 0 && newVal % 5 === 0) {
         triggerEpicMilestoneEffect();
-        pushLog(`🦖 MEILENSTEIN! ${newVal}x ${label} erlegt!`, true);
+        pushLog(dict.milestoneLog(newVal, label), true);
       } else {
         triggerSlashEffect();
-        pushLog(`+1 ${label} erlegt!`, false);
+        pushLog(dict.plusKillLog(label), false);
       }
     } else {
-      pushLog(`-1 ${label} korrigiert`, false);
+      pushLog(dict.minusKillLog(label), false);
     }
 
     if (state.sound) playClickSound(delta > 0 ? (newVal % 5 === 0 ? 780 : 520) : 280);
@@ -1528,8 +1976,7 @@
     if (state.history.length === 0) return;
     const last = state.history.pop();
     state.kills[last.dinoId] = Math.max(0, (state.kills[last.dinoId] || 0) - last.delta);
-    const target = ALL_TARGETS.find(d => d.id === last.dinoId);
-    pushLog(`Rückgängig: ${target.name}`, false);
+    pushLog(t().undoLog(getTargetName(last.dinoId)), false);
     if (state.sound) playClickSound(340);
     updateUI();
   }
@@ -1537,7 +1984,7 @@
   function resetTracker() {
     ALL_TARGETS.forEach(d => state.kills[d.id] = 0);
     state.history = [];
-    pushLog('Tracker zurückgesetzt.', false);
+    pushLog(t().resetLog, false);
     updateUI();
   }
 
@@ -1565,7 +2012,7 @@
     document.getElementById('count-snack').textContent = snack;
 
     const titleEl = document.getElementById('duo-title');
-    const activeTitle = state.mode === 'solo' ? state.soloTitle : state.duoTitle;
+    const activeTitle = getTitleForMode(state.mode);
     if (document.activeElement !== titleEl && titleEl.textContent !== activeTitle) {
       titleEl.textContent = activeTitle;
     }
@@ -1579,17 +2026,22 @@
   }
 
   function copyDinoList() {
+    const dict = t();
     const total = document.getElementById('total-kills').textContent;
     const activeLines = ALL_TARGETS
       .filter(d => (state.kills[d.id] || 0) > 0)
-      .map(d => `• ${d.name}: ${state.kills[d.id]}`);
+      .map(d => `• ${getTargetName(d.id)}: ${state.kills[d.id]}`);
 
-    const activeText = activeLines.length ? activeLines.join('\n') + '\n' : '• Noch keine Kills verzeichnet\n';
+    const activeText = activeLines.length ? activeLines.join('\n') + '\n' : `${dict.discordNoKills}\n`;
     const currentName = document.getElementById('duo-title').textContent.trim();
-    const modeTitle = `${state.mode === 'solo' ? 'Solo' : 'Duo'} [${currentName}] — Gespielt als: ${state.playerDino}`;
-    const headerLabel = state.mode === 'solo' ? 'Solo Kills' : 'Gemeinsame Kills';
-    const emoji = state.playerDino === 'Trike' ? ':sauropod:' : (state.playerDino === 'Stego' ? ':herbivore:' : ':t_rex:');
-    const output = `${emoji} **The Isle: Kill Counter (${modeTitle})** ${emoji}\n\n${headerLabel}: **${total}**\n----------------------------\n${activeText}`;
+    const modeTitle = dict.discordTitle(state.mode, currentName, state.playerDino);
+    const headerLabel = dict.discordTotalLabel(state.mode);
+    const emoji = state.playerDino === 'Trike'
+      ? ':sauropod:'
+      : (state.playerDino === 'Stego'
+        ? ':herbivore:'
+        : (state.playerDino === 'Deino' ? ':crocodile:' : ':t_rex:'));
+    const output = `${emoji} **The Isle Apex Kill Counter (${modeTitle})** ${emoji}\n\n${headerLabel}: **${total}**\n----------------------------\n${activeText}`;
 
     const ta = document.createElement('textarea');
     ta.value = output;
@@ -1600,13 +2052,13 @@
 
     try {
       if (document.execCommand('copy')) {
-        pushLog('Kill-Liste kopiert! [Strg+V bereit]', false);
+        pushLog(dict.copiedLog, false);
         if (state.sound) playClickSound(600);
       } else {
-        pushLog('Kopieren fehlgeschlagen.', false);
+        pushLog(dict.copyFailLog, false);
       }
     } catch {
-      pushLog('Browser blockiert Zwischenablage.', false);
+      pushLog(dict.clipboardBlockedLog, false);
     }
 
     document.body.removeChild(ta);
@@ -1634,10 +2086,11 @@
   });
 
   function init() {
+    setupPwaManifest();
     setupTitleEditor();
     syncDinoVisuals(state.playerDino, false);
     renderSections();
-    updateUI();
+    applyLanguage(state.lang);
   }
 
   init();
