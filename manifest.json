@@ -1,25 +1,16 @@
 {
   "name": "The Isle - Apex Kill Counter",
   "short_name": "The Isle - Apex Kill Counter",
-  "description": "Kill Counter für The Isle (Solo, Duo und Trio) mit Apex-Auswahl und Discord-Export.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#16110d",
   "theme_color": "#16110d",
   "icons": [
     {
       "src": "t-rex_skull.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "t-rex_skull.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     }
   ]
 }
