@@ -1,13 +1,27 @@
 {
-  "name": "Rex Kill Tracker",
-  "short_name": "KillTracker",
-  "start_url": "index.html",
+  "name": "The Isle - Apex Kill Counter",
+  "short_name": "The Isle - Apex Kill Counter",
+  "description": "Kill Counter für The Isle (Solo, Duo und Trio) mit Apex-Auswahl und Discord-Export.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0c0e0d",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait",
+  "background_color": "#16110d",
   "theme_color": "#16110d",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "t-rex_skull.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "t-rex_skull.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
